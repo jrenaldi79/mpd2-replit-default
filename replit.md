@@ -36,13 +36,6 @@ Preferred communication style: Simple, everyday language.
 
 # System Architecture
 
-**Architecture Pattern**: Next.js App with Pages Router
-
-**Technology Stack**:
-- **Framework**: Next.js 16 with React 19
-- **Markdown Parsing**: `marked` library (v16.4.1)
-- **Styling**: CSS Modules
-- **Server**: Node.js
 
 ## Pages
 
@@ -83,16 +76,6 @@ Preferred communication style: Simple, everyday language.
 - Error messages don't leak filesystem information
 
 ## Design Decisions
-
-**Framework Choice**:
-- **Chosen**: Next.js with Pages Router
-- **Rationale**: Modern React framework with built-in routing, API routes, and SSR capabilities
-- **Benefits**: File-based routing, API routes alongside pages, optimized builds
-
-**Styling Approach**:
-- **Chosen**: CSS Modules
-- **Rationale**: Scoped styling prevents conflicts, maintainable CSS
-- **Implementation**: Separate CSS module for each page
 
 **Port Configuration**:
 - **Port 5000**: Required for Replit webview integration
