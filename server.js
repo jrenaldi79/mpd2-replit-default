@@ -13,11 +13,12 @@ app.use(express.static('public'));
 
 async function findMarkdownFiles(dir, fileList = []) {
   const files = await fs.readdir(dir, { withFileTypes: true });
+  const excludedDirs = ['node_modules', '.git', '.cache', '.config', '.npm'];
   
   for (const file of files) {
     const filePath = path.join(dir, file.name);
     
-    if (file.isDirectory() && file.name !== 'node_modules' && !file.name.startsWith('.')) {
+    if (file.isDirectory() && !excludedDirs.includes(file.name)) {
       await findMarkdownFiles(filePath, fileList);
     } else if (file.isFile() && file.name.endsWith('.md')) {
       fileList.push(filePath);
