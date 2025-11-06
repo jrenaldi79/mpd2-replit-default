@@ -1,9 +1,10 @@
+import { NextResponse } from 'next/server'
 import fs from 'fs/promises'
 import path from 'path'
 
 const PROJECT_ROOT = path.resolve(process.cwd())
 
-async function findMarkdownFiles(dir, fileList = []) {
+async function findMarkdownFiles(dir: string, fileList: string[] = []): Promise<string[]> {
   const files = await fs.readdir(dir, { withFileTypes: true })
   const excludedDirs = ['node_modules', '.git', '.cache', '.config', '.npm', '.next']
   
@@ -17,22 +18,23 @@ async function findMarkdownFiles(dir, fileList = []) {
         continue
       }
     } else if (file.isFile() && file.name.endsWith('.md')) {
-      fileList.push(filePath)
+      // Return relative paths instead of absolute paths
+      const relativePath = path.relative(PROJECT_ROOT, filePath)
+      fileList.push(relativePath)
     }
   }
   
   return fileList
 }
 
-export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' })
-  }
-
+export async function GET() {
   try {
     const files = await findMarkdownFiles(PROJECT_ROOT)
-    res.status(200).json(files)
-  } catch (error) {
-    res.status(500).json({ error: error.message })
+    return NextResponse.json(files)
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    )
   }
 }
