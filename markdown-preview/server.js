@@ -5,11 +5,11 @@ const path = require('path');
 
 const app = express();
 const PORT = 3000;
-const PROJECT_ROOT = path.resolve('.');
+const PROJECT_ROOT = path.resolve(__dirname, '..');
 
 let markdownFilesCache = new Set();
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 async function findMarkdownFiles(dir, fileList = []) {
   const files = await fs.readdir(dir, { withFileTypes: true });
@@ -29,7 +29,7 @@ async function findMarkdownFiles(dir, fileList = []) {
 }
 
 async function refreshMarkdownCache() {
-  const files = await findMarkdownFiles('.');
+  const files = await findMarkdownFiles(PROJECT_ROOT);
   markdownFilesCache = new Set(files.map(f => path.resolve(f)));
   return files;
 }

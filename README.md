@@ -1,48 +1,66 @@
-# Markdown Preview Server with Mermaid Support
+# Project Overview
 
-A simple markdown preview server that automatically renders your markdown files with full Mermaid diagram support.
+This project contains two separate Node.js applications running on different ports.
+
+## Project Structure
+
+```
+├── main-app/              # Main application (Port 5000)
+│   ├── src/               # Application source code
+│   │   └── app.js        # Main server file
+│   ├── routes/           # Express route handlers
+│   ├── middleware/       # Custom middleware
+│   ├── config/           # Configuration files
+│   ├── public/           # Static assets (HTML, CSS, JS, images)
+│   ├── package.json      # Dependencies and scripts
+│   └── README.md         # Main app documentation
+│
+├── markdown-preview/      # Markdown preview server (Port 3000)
+│   ├── server.js         # Express server with markdown rendering
+│   ├── public/           # Frontend static files
+│   │   └── index.html   # Markdown preview UI
+│   └── README.md         # Markdown preview documentation
+│
+└── .bmad-core/           # BMad Method Framework
+    └── ...               # AI-driven development methodology system
+```
+
+## Running the Applications
+
+Both applications run simultaneously on different ports:
+
+### Main App (Port 5000)
+- **Default webview**: This app shows in the main Replit preview
+- **Access**: Automatic in Replit preview
+- **Start**: `node main-app/src/app.js`
+
+### Markdown Preview (Port 3000)
+- **Purpose**: Preview markdown files with Mermaid diagram support
+- **Access**: Via Replit Ports panel → Select port 3000
+- **Start**: `node markdown-preview/server.js`
+
+## Quick Start
+
+Both servers are already configured and running via Replit workflows:
+- **main-app** workflow → Port 5000 (webview)
+- **markdown-preview** workflow → Port 3000 (console)
 
 ## Features
 
-- **Automatic File Discovery**: Finds all `.md` files in your project (excluding `node_modules`)
-- **Mermaid Diagrams**: Full support for Mermaid diagrams embedded in markdown
-- **Live Preview**: Click any file to see it rendered
-- **Clean Interface**: Simple sidebar for file navigation
-- **Secure**: Protected against path traversal attacks
+### Main App
+- Express.js server
+- Static file serving
+- Structured directory layout for scaling
 
-## Usage
+### Markdown Preview
+- Automatic markdown file discovery across the entire project
+- Full Mermaid diagram support
+- Security: Path traversal protection
+- Clean file browser interface
+- No changes needed to existing markdown files
 
-1. The server is already running and available in the Replit preview
-2. All your markdown files will appear in the sidebar on the left
-3. Click any file to preview it with rendered Mermaid diagrams
-4. No changes needed to your existing markdown files!
+## Development
 
-## Markdown Format
-
-Your markdown files work as-is. For Mermaid diagrams, use code blocks with the `mermaid` language:
-
-\`\`\`markdown
-# My Document
-
-Some text here.
-
-\`\`\`mermaid
-graph TD
-    A[Start] --> B[Process]
-    B --> C[End]
-\`\`\`
-\`\`\`
-
-## Technical Details
-
-- **Server**: Express.js on port 3000
-- **Markdown Parser**: marked
-- **Diagram Renderer**: Mermaid.js (loaded from CDN)
-- **Security**: Whitelist-based file access with path traversal protection
-
-## Accessing the Markdown Preview
-
-The markdown preview server runs on **port 3000** (leaving port 5000 free for your main app). To access it:
-- Open the Replit "Ports" panel
-- Click on port 3000 to open the markdown preview in a new tab
-- Or access it via the webview URL with `:3000` appended
+Each application has its own README with detailed information:
+- See `main-app/README.md` for main app details
+- See `markdown-preview/README.md` for markdown preview details
