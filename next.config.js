@@ -4,17 +4,15 @@ const nextConfig = {
   compiler: {
     removeConsole: false,
   },
-  experimental: {
-    allowedOrigins: ['*'],
-  },
+  // Allow all origins for Replit development
   async headers() {
     return [
       {
         source: '/:path*',
         headers: [
           {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
           },
         ],
       },
