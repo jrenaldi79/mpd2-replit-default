@@ -1,249 +1,216 @@
-# Next.js Markdown Preview Application
+# Northwestern MPD2 Next.js Starter Template
 
-A modern, secure markdown preview application built with Next.js 16, featuring Replit-style rendering, syntax highlighting, and Mermaid diagram support.
+A production-ready starter template for Northwestern MPD2 master's students, featuring a dual-app architecture designed to accelerate development while learning the BMAD methodology.
 
-## 🚀 Features
+## 🎯 Purpose
 
-### ✨ Markdown Preview System
-- **Interactive File Browser**: Expandable folder tree for easy markdown file navigation
-- **Live Rendering**: Real-time markdown to HTML conversion with secure sanitization
-- **Syntax Highlighting**: Beautiful code blocks with custom Replit-style theme
-  - Blue keywords, orange strings, green numbers, purple functions
-  - Support for JavaScript, TypeScript, Python, YAML, Bash, CSS, HTML, SQL, JSON, and more
-- **Mermaid Diagrams**: Full support for flowcharts, sequence diagrams, and more
-- **Security First**: XSS protection via DOMPurify, path traversal prevention
-- **Clean UI**: Light code blocks with dark text, matching Replit's aesthetic
+This starter template provides MPD2 students with:
+1. **A Document Viewer** - Interactive markdown viewer to reference BMAD methodology documentation while coding
+2. **A Shell Main App** - A starter structure that students replace with their own project ideas
+3. **Production-Ready Setup** - TDD framework, TypeScript, Tailwind CSS, and best practices pre-configured
 
-### 🏠 Home Page
-- Welcome screen with gradient background
-- Navigation to all application features
-- Built as React Server Component for optimal performance
+## 🏗️ Dual-App Architecture
 
-## 🛠️ Technology Stack
+### 1. Document Viewer (`/markdown-preview`)
+A built-in markdown documentation viewer that helps students:
+- Reference BMAD methodology while coding
+- View project documentation with syntax highlighting
+- Render Mermaid diagrams for visual understanding
+- Keep methodology docs accessible during development
 
-| Category | Technology |
-|----------|-----------|
-| **Framework** | Next.js 16.0.1 with App Router & Turbopack |
-| **Language** | TypeScript 5.x (strict mode) |
-| **Styling** | Tailwind CSS 3.4.x + Typography plugin |
-| **Testing** | Jest + React Testing Library |
-| **Markdown** | marked (rendering), isomorphic-dompurify (sanitization) |
-| **Syntax Highlighting** | highlight.js with custom Replit theme |
-| **Diagrams** | Mermaid 10.x |
-| **Runtime** | Node.js on Replit platform |
+**This viewer stays with your project** - use it to document your own app as you build!
 
-## 📁 Project Structure
+### 2. Main App Shell (`/`)
+A minimal starter application that students **replace with their own ideas**:
+- Clean layout with header, main content, and footer
+- Example component showing React hooks and state management
+- Links to helpful resources
+- Ready for you to build your unique application
 
+## 🚀 Quick Start for Students
+
+### Step 1: Start with the Template
+```bash
+# The template is already set up and running
+# Access at port 5000 in your Replit webview
+```
+
+### Step 2: Understand the Structure
 ```
 .
-├── app/                          # Next.js App Router
-│   ├── api/                      # API Route Handlers
-│   │   ├── files/                # File discovery API
-│   │   └── markdown/             # Markdown rendering API
-│   ├── markdown-preview/         # Markdown preview feature
-│   │   ├── page.tsx             # Preview page (Client Component)
-│   │   ├── FileTree.tsx         # File navigation component
-│   │   └── highlight-theme.css  # Syntax highlighting styles
-│   ├── globals.css              # Global styles
-│   ├── layout.tsx               # Root layout
-│   └── page.tsx                 # Home page
+├── app/                          # Your main application
+│   ├── page.tsx                 # 👈 Start here! Replace with your app
+│   ├── components/              # 👈 Add your components here
+│   │   └── ExampleComponent.tsx # Example to learn from (delete when ready)
+│   ├── api/                     # API routes
+│   └── markdown-preview/        # Document viewer (keep this!)
 │
-├── tests/                        # Test suite (TDD)
-│   ├── integration/              # Integration tests
-│   └── unit/                     # Unit tests (mirrors app structure)
-│
-├── types/                        # TypeScript type definitions
-│   └── index.ts
-│
-├── jest.config.js               # Jest configuration
-├── next.config.js               # Next.js configuration
-├── tailwind.config.js           # Tailwind CSS configuration
-└── tsconfig.json                # TypeScript configuration
+├── tests/                       # Your tests (TDD is required!)
+├── types/                       # TypeScript type definitions
+└── replit.md                    # Project rules & guidelines
 ```
 
-## 🚀 Getting Started
+### Step 3: Build Your App
+1. **Replace the home page** (`app/page.tsx`) with your app's main interface
+2. **Add your components** in `app/components/`
+3. **Create API routes** in `app/api/` as needed
+4. **Write tests first** (TDD) in `tests/`
+5. **Document as you go** using markdown files
 
-### Prerequisites
-- Node.js (already installed on Replit)
-- npm (already installed on Replit)
+## 💡 What to Build
 
-### Installation
+Replace the shell app with YOUR idea:
+- 🛍️ E-commerce platform
+- 📊 Data visualization dashboard
+- 🎮 Interactive game
+- 📱 Social media app
+- 🤖 AI-powered tool
+- 📚 Educational platform
+- Whatever you imagine!
 
+## 🛠️ Pre-Configured Tech Stack
+
+| Category | Technology | Why It's Included |
+|----------|------------|-------------------|
+| **Framework** | Next.js 16 | Industry-standard React framework |
+| **Language** | TypeScript | Type safety and better IDE support |
+| **Styling** | Tailwind CSS | Rapid UI development |
+| **Testing** | Jest + React Testing Library | TDD methodology (required) |
+| **Markdown** | marked + DOMPurify | Documentation & security |
+| **Diagrams** | Mermaid | Visual documentation |
+
+## 📝 Development Workflow
+
+### 1. Always Start with Tests (TDD)
 ```bash
-# Install dependencies
-npm install
-```
+# Write test first
+# Create: tests/unit/app/components/MyComponent.test.tsx
 
-### Running the Application
-
-```bash
-# Development mode (with hot reload)
-npm run dev
-
-# Production build
-npm run build
-npm start
-
-# Lint code
-npm run lint
-```
-
-The application runs on **port 5000** and is accessible via the Replit webview.
-
-## 🧪 Testing
-
-This project follows **Test-Driven Development (TDD)** methodology.
-
-### Running Tests
-
-```bash
-# Run all tests
+# Run tests (they should fail - RED)
 npm test
 
-# Run tests in watch mode (auto-rerun on changes)
-npm run test:watch
+# Write code to pass tests - GREEN
+# Create: app/components/MyComponent.tsx
 
-# Run tests with coverage report
+# Run tests again (they should pass)
+npm test
+```
+
+### 2. Run Your Development Server
+```bash
+npm run dev
+# Opens on port 5000
+```
+
+### 3. Check Test Coverage
+```bash
 npm run test:coverage
-
-# Run specific test file
-npm test -- tests/unit/app/api/markdown/route.test.ts
-
-# Run unit tests only
-npm test -- tests/unit/
-
-# Run integration tests only
-npm test -- tests/integration/
+# Minimum 80% coverage required
 ```
 
-### Test Coverage
-- **Minimum coverage threshold**: 80%
-- Coverage enforced for: branches, functions, lines, statements
-- Coverage report: `/coverage/lcov-report/index.html`
+## 📚 Using the Document Viewer
 
-## 📡 API Endpoints
+The markdown viewer at `/markdown-preview` helps you:
+- Keep BMAD methodology docs open while coding
+- Reference your own project documentation
+- View code examples with syntax highlighting
+- Understand architecture with Mermaid diagrams
 
-### GET `/api/files`
-Recursively scans the project for markdown files.
+**Pro tip**: Add your own markdown docs as you build - they'll automatically appear in the viewer!
 
-**Response:**
-```json
-{
-  "files": [
-    {
-      "name": "README.md",
-      "path": "README.md",
-      "type": "file"
-    },
-    {
-      "name": "docs",
-      "path": "docs",
-      "type": "folder",
-      "children": [...]
-    }
-  ]
-}
-```
+## 🎨 Customization Guide
 
-**Features:**
-- Excludes: `node_modules`, `.git`, `.next`, `.cache`
-- Sorts: folders before files, alphabetically within each category
+### Changing the Main App
+1. **Home Page**: Edit `app/page.tsx`
+2. **Global Styles**: Modify `app/globals.css`
+3. **Layout**: Update `app/layout.tsx`
+4. **Colors**: Adjust Tailwind config in `tailwind.config.js`
 
-### GET `/api/markdown?file={path}`
-Renders a markdown file to HTML.
+### Adding Features
+1. **New Page**: Create `app/your-feature/page.tsx`
+2. **API Route**: Create `app/api/your-endpoint/route.ts`
+3. **Component**: Create `app/components/YourComponent.tsx`
+4. **Test**: Create `tests/unit/app/components/YourComponent.test.tsx`
 
-**Parameters:**
-- `file` (required): Path to markdown file
+### Keep the Document Viewer
+The `/markdown-preview` route is independent - your styling changes won't affect it!
 
-**Response:**
-```json
-{
-  "html": "<h1>Title</h1><p>Content...</p>",
-  "raw": "# Title\nContent..."
-}
-```
+## 🔒 Security & Best Practices
 
-**Features:**
-- Markdown to HTML conversion via `marked`
-- XSS protection via `isomorphic-dompurify`
-- Path traversal protection
-- Mermaid diagram support
+### Built-In Security
+- XSS protection via DOMPurify
+- Path traversal prevention
+- TypeScript for type safety
+- Environment variables via Replit Secrets
 
-## 🔒 Security
+### Required Practices
+- **TDD**: Write tests before code
+- **Coverage**: Maintain >80% test coverage
+- **Types**: Use TypeScript types
+- **Secrets**: Never commit API keys (use Replit Secrets)
 
-### Input Sanitization
-All user-provided HTML is sanitized using `isomorphic-dompurify` to prevent XSS attacks.
+## 📋 Assignment Checklist
 
-### Path Traversal Protection
-API endpoints validate file paths to prevent directory traversal attacks.
+Before submitting your project:
+- [ ] Replaced shell app with your unique idea
+- [ ] All features have tests (TDD)
+- [ ] Test coverage >80%
+- [ ] TypeScript types defined
+- [ ] Documentation in markdown files
+- [ ] No hardcoded secrets
+- [ ] Code follows project structure
 
-### Environment Variables
-Use Replit Secrets for sensitive credentials - never commit `.env` files.
+## 🆘 Getting Help
 
-## 🎨 Styling
+### Resources
+- **BMAD Docs**: Use the `/markdown-preview` viewer
+- **Next.js Docs**: https://nextjs.org/docs
+- **Tailwind CSS**: https://tailwindcss.com/docs
+- **TypeScript**: https://www.typescriptlang.org/docs
+- **React**: https://react.dev
 
-### Replit-Style Markdown Rendering
-- **Code blocks**: Light gray background (`bg-gray-100`) with dark text
-- **Inline code**: Red text (`text-red-700`) with light gray background
-- **Headings**: Bold with proper hierarchy
-- **Links**: Blue with hover effects
-- **Lists**: Clean bullet points and numbered lists
+### Common Issues
 
-### Syntax Highlighting Colors
-- **Keywords**: Blue (`#2563eb`)
-- **Strings**: Orange (`#c2410c`)
-- **Numbers**: Green (`#059669`)
-- **Functions**: Purple (`#7c3aed`)
-- **Comments**: Gray (`#6b7280`)
+**Changes not showing?**
+- Restart the workflow in Replit
+- Check the console for errors
+- Clear browser cache
 
-## 📝 Development Guidelines
+**Tests failing?**
+- Read error messages carefully
+- Check test file location
+- Ensure proper imports
 
-### Test-Driven Development (TDD)
-1. **Write tests first** - Define expected behavior
-2. **Watch tests fail** - Confirm RED state
-3. **Implement feature** - Make tests pass (GREEN)
-4. **Refactor** - Improve code quality
-5. **Verify coverage** - Ensure >80% coverage
+**Type errors?**
+- Define types in `types/index.ts`
+- Use proper TypeScript syntax
+- Check tsconfig.json
 
-### Code Quality
-- TypeScript strict mode enabled
-- ESLint and Prettier configured
-- Path aliases: `@/components/...`
-- Explicit type imports: `import type { ... }`
+## 🎓 Learning Objectives
 
-### Component Patterns
-- **Favor Server Components** - Use Client Components only when necessary
-- **Composition over configuration** - Accept `children` prop
-- **State colocation** - Keep state close to usage
+This starter template helps you learn:
+1. **Modern web development** with Next.js and React
+2. **Test-Driven Development** methodology
+3. **TypeScript** for production code
+4. **Component-based architecture**
+5. **API development** with Next.js routes
+6. **Professional documentation** practices
 
 ## 🚢 Deployment
 
-The application is configured for Replit deployment on port 5000.
-
-### Workflow Configuration
-```bash
-# The following workflow is pre-configured:
-nextjs-app: npm run dev
-```
+When ready to deploy:
+1. Ensure all tests pass
+2. Build production version: `npm run build`
+3. Use Replit's deployment features
+4. Set environment variables in Replit Secrets
 
 ## 📄 License
 
-ISC
-
-## 🤝 Contributing
-
-This project follows strict TDD methodology. Before contributing:
-1. Read `replit.md` for complete project rules and guidelines
-2. Write tests before implementation
-3. Ensure test coverage >80%
-4. Follow the existing code style
-
-## 📚 Additional Documentation
-
-- **Project Rules**: See `replit.md` for comprehensive development guidelines
-- **Test Markdown**: See `test-markdown.md` for syntax highlighting examples
-- **Type Definitions**: See `types/index.ts` for TypeScript types
+ISC - This is your starter template to build upon!
 
 ---
 
-Built with ❤️ using Next.js 16, TypeScript, and Tailwind CSS
+**Remember**: This is YOUR canvas. The shell app is just a starting point - replace it with your creative vision and make something amazing! 🌟
+
+**Happy Coding!** 
+*Northwestern MPD2 Program*
