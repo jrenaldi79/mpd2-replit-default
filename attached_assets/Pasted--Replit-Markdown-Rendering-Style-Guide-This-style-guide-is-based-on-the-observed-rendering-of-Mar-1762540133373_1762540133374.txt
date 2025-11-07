@@ -1,0 +1,48 @@
+## Replit Markdown Rendering Style Guide
+
+This style guide is based on the observed rendering of Markdown files (like `README.md`) within the Replit environment, which utilizes **Tailwind CSS** and the **Tailwind Typography plugin** (`@tailwindcss/typography`).
+
+The styling aims for a clean, readable, and developer-friendly presentation.
+
+### 1. Typography (Fonts)
+
+| Element | Font Family | Style | Notes |
+| :--- | :--- | :--- | :--- |
+| **Body Text** | Likely a system font stack (e.g., `sans-serif`) or a custom Replit font. | Standard/Prose | Used for all general paragraphs and list items. |
+| **Code Blocks** | **Monospace** (e.g., `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`) | Monospace | Essential for code readability and alignment. |
+| **Headings** | Inherits from the main body font, but is scaled up. | Bold, Scaled | Headings use increased font size and weight to establish hierarchy. |
+
+### 2. Text Sizing (Based on `prose` class)
+
+The base text size appears to be the standard `prose` size (equivalent to `text-base` or 16px), as indicated by the recent change from `prose-lg` to `prose`.
+
+| Element | Markdown | HTML Tag | Approximate Size (Tailwind Class) |
+| :--- | :--- | :--- | :--- |
+| **H1** | `# Heading 1` | `<h1>` | Large (e.g., `text-2xl` or `text-3xl`) |
+| **H2** | `## Heading 2` | `<h2>` | Medium-Large (e.g., `text-xl` or `text-2xl`) |
+| **H3** | `### Heading 3` | `<h3>` | Medium (e.g., `text-lg` or `text-xl`) |
+| **Paragraph** | `Text` | `<p>` | Standard (`text-base` / 16px) |
+| **List Item** | `* Item` | `<li>` | Standard (`text-base` / 16px) |
+
+### 3. Code Rendering
+
+Code rendering is highly optimized for readability in a dark/developer theme.
+
+| Element | Styling | Notes |
+| :--- | :--- | :--- |
+| **Inline Code** | Subtle background color, Monospace font, slightly darker text color than surrounding prose. | Rendered using the `<code>` tag. Example: `code`. |
+| **Code Blocks** | **Monospace font**, **Dark background** (e.g., `bg-gray-800` or similar dark shade), **Light text color** (e.g., `text-gray-200`). | Uses syntax highlighting (not detailed here, but implied by the environment). The block is typically padded and has rounded corners. |
+| **Code Block Text** | The text within the code block is a light color (e.g., white or light gray) for high contrast against the dark background. | This addresses the "gray on gray" issue mentioned in the history, indicating a fix was applied to ensure high contrast. |
+
+### 4. Structural Elements
+
+| Element | Styling | Notes |
+| :--- | :--- | :--- |
+| **Lists** | Standard bullet points (`<ul>`) and numbered lists (`<ol>`). Good vertical spacing between list items. | Nested lists are properly indented. |
+| **Separators** | A horizontal rule (`<hr>`) is rendered as a subtle, thin line (e.g., `border-t border-gray-300`). | Used to visually break up sections, as seen between major sections like "User Preferences" and "🚨 MANDATORY: TDD First". |
+| **Emphasis** | **Bold text** (`<strong>`) is rendered with increased font weight. *Italic text* (`<em>`) is rendered with slant. |
+| **Links** | Standard text color, often with an underline or a distinct color to indicate interactivity. |
+
+### 5. Key Design Philosophy
+
+The overall design adheres to a **minimalist, high-contrast, and functional** aesthetic, typical of developer environments. The use of the Tailwind Typography plugin ensures that all standard Markdown elements (headings, lists, tables, quotes) are automatically styled with sensible defaults for optimal reading flow (prose).
