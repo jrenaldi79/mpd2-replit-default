@@ -37,7 +37,7 @@ This project is a Next.js 14 application built for the Replit platform. It utili
 1.  **Red Phase**: State: "Following TDD, I'll write the failing tests first." Write tests that define the new functionality and confirm they fail as expected (RED).
 2.  **Green Phase**: Write the simplest possible code to make the tests pass. Run tests to confirm they now pass (GREEN).
 3.  **Refactor Phase**: Clean up and optimize the implementation and test code without changing external behavior.
-4.  **Finalization Phase**: Run the full test suite (`npm test`) and validate test coverage is >90% (`npm run test:coverage`).
+4.  **Finalization Phase**: Run the full test suite (`npm test`) and validate test coverage is >80% (`npm run test:coverage`).
 
 ### TDD Enforcement Checklist
 Before writing ANY implementation code, you MUST:
@@ -213,21 +213,184 @@ This Next.js application follows a feature-based structure. **ALWAYS follow thes
 
 ---
 
-## 🧪 Testing Guidelines
--   **TDD is Mandatory**: Write tests first (Red-Green-Refactor).
--   **Test Behavior, Not Implementation**: Focus tests on the user's perspective.
-    ```typescript
-    // ✅ GOOD: Test what the user experiences
-    test('form submission displays a success message', async () => {
-      const user = userEvent.setup();
-      render(<MyForm />);
-      await user.type(screen.getByLabelText(/name/i), 'John Doe');
-      await user.click(screen.getByRole('button', { name: /submit/i }));
-      expect(await screen.findByText(/thank you, john doe!/i)).toBeInTheDocument();
-    });
-    ```
--   **Unit Tests**: Focus on business logic and utilities. Mock dependencies and test edge cases.
--   **Integration Tests**: Test full request/response cycles for API endpoints and user flows across multiple components.
+## 🧪 Testing Guide
+
+### Available Test Commands
+
+```bash
+# Run all tests (unit + integration)
+npm test
+
+# Run tests in watch mode (auto-rerun on file changes)
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+
+# Run specific test file
+npm test -- tests/unit/app/api/markdown/route.test.ts
+
+# Run all unit tests only
+npm test -- tests/unit/
+
+# Run all integration tests only
+npm test -- tests/integration/
+
+# Run tests matching a pattern
+npm test -- --testNamePattern="markdown rendering"
+```
+
+### When to Run Each Type of Test
+
+#### 🟢 **Unit Tests** (`/tests/unit/`)
+**Run these when:**
+- Developing a single function, component, or API route
+- Testing business logic in isolation
+- Testing edge cases and error handling
+- You need fast feedback (unit tests are faster)
+
+**What they test:**
+- Individual functions and utilities
+- Component rendering and props
+- API route handlers (mocked dependencies)
+- Data validation and transformation logic
+
+**Example workflow:**
+```bash
+# While developing a new utility function
+npm run test:watch -- tests/unit/lib/
+```
+
+#### 🔵 **Integration Tests** (`/tests/integration/`)
+**Run these when:**
+- Testing complete user flows across multiple components
+- Validating API endpoints with real request/response cycles
+- Testing interactions between different parts of the system
+- Before completing a feature
+
+**What they test:**
+- Full page interactions (clicking, typing, navigation)
+- API endpoints with database interactions
+- Multi-component workflows
+- State management across components
+
+**Example workflow:**
+```bash
+# After completing a feature
+npm test -- tests/integration/markdown-preview.test.tsx
+```
+
+### Test Coverage Requirements
+
+**Minimum coverage threshold: 80%** (enforced by Jest)
+- Branches: 80%
+- Functions: 80%
+- Lines: 80%
+- Statements: 80%
+
+**Check coverage:**
+```bash
+npm run test:coverage
+```
+
+Coverage report is generated at: `/coverage/lcov-report/index.html`
+
+### Testing Best Practices
+
+#### ✅ DO THIS
+```typescript
+// ✅ GOOD: Test user behavior, not implementation
+test('form submission displays success message', async () => {
+  const user = userEvent.setup();
+  render(<MyForm />);
+  await user.type(screen.getByLabelText(/name/i), 'John Doe');
+  await user.click(screen.getByRole('button', { name: /submit/i }));
+  expect(await screen.findByText(/thank you, john doe!/i)).toBeInTheDocument();
+});
+
+// ✅ GOOD: Test API routes with real HTTP semantics
+test('GET /api/markdown returns 400 for missing file param', async () => {
+  const { req, res } = createMocks({ method: 'GET' });
+  await GET(req);
+  expect(res._getStatusCode()).toBe(400);
+});
+```
+
+#### ❌ DON'T DO THIS
+```typescript
+// ❌ BAD: Testing implementation details
+test('component has useState hook', () => {
+  const component = shallow(<MyComponent />);
+  expect(component.instance().state.value).toBe('initial');
+});
+
+// ❌ BAD: Testing internal state directly
+test('handleClick sets clicked to true', () => {
+  // Don't test internal state - test what the user sees!
+});
+```
+
+### Test File Naming & Organization
+
+**Naming convention:**
+- `*.test.tsx` - Component tests (React components)
+- `*.test.ts` - Logic tests (utilities, API routes, types)
+
+**File location mirrors app structure:**
+```
+app/api/markdown/route.ts       → tests/unit/app/api/markdown/route.test.ts
+app/markdown-preview/page.tsx   → tests/unit/app/markdown-preview/page.test.tsx
+                                → tests/integration/markdown-preview.test.tsx
+```
+
+### Debugging Failed Tests
+
+**Step 1: Read the error message**
+```bash
+npm test
+# Look for: Expected vs Received, stack traces, line numbers
+```
+
+**Step 2: Run the specific failing test in watch mode**
+```bash
+npm run test:watch -- tests/unit/app/api/markdown/route.test.ts
+```
+
+**Step 3: Add console.log or use the debugger**
+```typescript
+test('my failing test', () => {
+  const result = myFunction();
+  console.log('Result:', result); // Add temporary logging
+  expect(result).toBe(expected);
+});
+```
+
+**Step 4: Check test setup and mocks**
+- Verify mocks are configured correctly
+- Check jest.setup.js for global test configuration
+- Ensure test environment matches production
+
+### TDD Workflow Reminder
+
+```bash
+# 1. Write failing test (RED)
+npm test -- tests/unit/app/lib/utils.test.ts
+# Expected: FAIL (test should fail)
+
+# 2. Write minimal implementation (GREEN)
+# ... edit app/lib/utils.ts ...
+npm test -- tests/unit/app/lib/utils.test.ts
+# Expected: PASS
+
+# 3. Refactor if needed
+# ... improve code quality ...
+npm test -- tests/unit/app/lib/utils.test.ts
+# Expected: PASS (tests still pass after refactoring)
+
+# 4. Run full suite before committing
+npm test
+npm run test:coverage
+```
 
 ---
 
