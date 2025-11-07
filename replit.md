@@ -1,8 +1,12 @@
-# Project Rules & Guidelines (v3)
+# Northwestern MPD2 Starter Template - Project Rules & Guidelines
 
 ## Overview
 
-This project is a Next.js 16 application built for the Replit platform. It utilizes TypeScript, Tailwind CSS, the App Router architecture, and the Turbopack bundler. Its primary purpose is to provide a platform for a welcome page and an interactive markdown previewer with live rendering and XSS protection.
+This is a **Next.js 16 starter template** for Northwestern MPD2 master's students, featuring a dual-app architecture:
+1. **Document Viewer** (`/markdown-preview`) - A markdown viewer to help students reference BMAD methodology documentation while coding
+2. **Shell Main App** (`/`) - A minimal starter application that students will **replace** with their own project ideas
+
+The template provides a production-ready foundation with TypeScript, Tailwind CSS, TDD framework, and the Turbopack bundler pre-configured.
 
 ### 🔧 Technology Stack
 - **Framework**: **Next.js 16.x** with Turbopack (App Router)
@@ -15,14 +19,17 @@ This project is a Next.js 16 application built for the Replit platform. It utili
 - **Schema Validation**: Zod
 - **Runtime**: Node.js on Replit platform (Port: 5000)
 
-### 📋 Project Context for Agent
-1. This is a markdown preview application with real-time rendering.
-2. **Security is critical**: All user input must be sanitized and validated.
-3. The app uses Replit-style UI conventions (light backgrounds, clean typography).
-4. **TDD is mandatory**: Write tests before implementation.
-5. All new features must integrate with the existing navigation and architecture.
-6. The project uses the **App Router** (not the Pages Router).
-7. **Server Components are preferred** over Client Components wherever possible.
+### 📋 Project Context for Students & AI Agent
+1. **This is a STARTER TEMPLATE** - The main app (`/`) is meant to be replaced with student projects
+2. **Dual-App Architecture**:
+   - Document Viewer (`/markdown-preview`) - Keep this for BMAD methodology reference
+   - Main App (`/`) - Replace this "shell" with your unique project idea
+3. **Security is critical**: All user input must be sanitized and validated
+4. **TDD is mandatory**: Write tests before implementation (80% coverage required)
+5. The Document Viewer uses Replit-style UI (light backgrounds, clean typography)
+6. Students can style their main app independently - it doesn't affect the document viewer
+7. The project uses the **App Router** (not the Pages Router)
+8. **Server Components are preferred** over Client Components wherever possible
 
 ### 👤 User Preferences
 - **Preferred communication style**: Simple, everyday language.
