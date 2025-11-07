@@ -221,6 +221,55 @@ The application is built on **Next.js 16** with the stable **Turbopack** bundler
 -   Store sensitive configuration in environment variables.
 -   Validate JWT tokens and handle expiration gracefully.
 
+## Secrets Management
+
+**NEVER commit secrets to version control.** Use Replit's native secrets management and follow these best practices:
+
+### Replit Secrets Tool
+-   **Use Replit's Secrets Workspace Tool**: All API keys, tokens, and sensitive credentials should be stored in Replit's encrypted Secrets tool, not in `.env` files committed to the repository.
+-   **App Secrets**: Specific to this Replit App, managed in the `App Secrets` tab.
+-   **Account Secrets**: Shareable across all your Replit Apps, managed in the `Account Secrets` tab.
+-   **Access in Code**: Use standard environment variable methods:
+    ```typescript
+    // Next.js / Node.js
+    const apiKey = process.env.MY_API_KEY
+    ```
+
+### Environment File Hierarchy
+-   **`.env.local`**: Development-only values, **gitignored**, never committed.
+-   **`.env.example`**: Template with dummy/placeholder values, **committed** to repository as documentation.
+-   **Replit Secrets**: Production values, managed through Replit's encrypted Secrets tool.
+-   **Predefined Variables**: Replit automatically provides `REPLIT_DOMAINS`, `REPLIT_USER`, `REPLIT_DEPLOYMENT`, `REPLIT_DEV_DOMAIN`.
+
+### Secret Protection
+-   **Pre-commit Hooks**: Use tools like `git-secrets` or `husky` to scan for accidentally committed API keys, tokens, or passwords.
+-   **Code Review**: Always review PRs for hardcoded secrets before merging.
+-   **`.gitignore`**: Ensure `.env.local`, `.env.development.local`, and similar files are in `.gitignore`.
+
+### Environment Variable Validation
+-   **Use Zod Schemas**: Validate all required environment variables at application startup to fail fast if configuration is missing.
+    ```typescript
+    import { z } from 'zod'
+    
+    const envSchema = z.object({
+      DATABASE_URL: z.string().url(),
+      API_KEY: z.string().min(1),
+      NODE_ENV: z.enum(['development', 'production', 'test']),
+    })
+    
+    const env = envSchema.parse(process.env)
+    ```
+-   **Startup Validation**: Add validation logic in `app/layout.tsx` or a dedicated config file to ensure critical secrets are present before the app starts.
+
+### Secret Rotation
+-   **Document Rotation Schedule**: Maintain a schedule for rotating API keys and tokens (e.g., every 90 days).
+-   **Emergency Rotation**: Have a process to immediately rotate secrets if they're accidentally exposed.
+-   **Audit Trail**: Document when secrets were last rotated in team documentation or project management tools.
+
+### Database & Integration Secrets
+-   **Auto-Generated**: When using Replit's PostgreSQL database or object storage, credentials like `DATABASE_URL`, `PGHOST`, `PGUSER`, `PGPASSWORD` are automatically created as secrets.
+-   **Supabase**: Store `SUPABASE_URL` and `SUPABASE_ANON_KEY` in Replit Secrets, never in code.
+
 ## Testing Guidelines
 -   **Unit Tests**:
     -   Focus on critical functionality (business logic, utility functions).
