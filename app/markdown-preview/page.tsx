@@ -134,21 +134,23 @@ export default function MarkdownPreviewPage() {
             <div
               ref={contentRef}
               className="prose max-w-none
-                prose-h1:text-gray-900 prose-h1:border-b prose-h1:border-gray-200 prose-h1:pb-3 prose-h1:mb-6
-                prose-h2:text-gray-800 prose-h2:mt-12 prose-h2:mb-4 prose-h2:font-semibold
-                prose-h3:text-gray-700 prose-h3:mt-8 prose-h3:mb-3
+                prose-h1:text-gray-900 prose-h1:font-bold prose-h1:border-b prose-h1:border-gray-200 prose-h1:pb-3 prose-h1:mb-6
+                prose-h2:text-gray-800 prose-h2:mt-12 prose-h2:mb-4 prose-h2:font-bold
+                prose-h3:text-gray-700 prose-h3:mt-8 prose-h3:mb-3 prose-h3:font-bold
                 prose-p:text-gray-700 prose-p:leading-relaxed
-                prose-code:before:content-none prose-code:after:content-none
-                prose-code:bg-gray-100 prose-code:text-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-normal
-                prose-pre:bg-slate-50 prose-pre:border prose-pre:border-gray-200 prose-pre:shadow-sm prose-pre:my-6
-                prose-pre:code:bg-transparent prose-pre:code:text-slate-800 prose-pre:code:p-0 prose-pre:code:text-sm prose-pre:code:leading-relaxed
-                prose-pre:p-5 prose-pre:rounded-xl prose-pre:overflow-x-auto
-                prose-blockquote:border-l-4 prose-blockquote:border-purple-400 prose-blockquote:bg-purple-50 prose-blockquote:pl-4 prose-blockquote:py-2 prose-blockquote:italic prose-blockquote:text-gray-700
-                prose-a:text-purple-600 prose-a:no-underline hover:prose-a:underline hover:prose-a:text-purple-700
-                prose-strong:text-gray-900 prose-strong:font-semibold
-                prose-ul:my-4 prose-ol:my-4
+                prose-code:font-mono prose-code:before:content-none prose-code:after:content-none
+                prose-code:bg-gray-200 prose-code:text-gray-900 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+                prose-pre:bg-gray-800 prose-pre:my-6 prose-pre:font-mono
+                prose-pre:code:bg-transparent prose-pre:code:text-gray-100 prose-pre:code:p-0 prose-pre:code:text-sm prose-pre:code:leading-relaxed
+                prose-pre:p-5 prose-pre:rounded-lg prose-pre:overflow-x-auto
+                prose-blockquote:border-l-4 prose-blockquote:border-gray-400 prose-blockquote:pl-4 prose-blockquote:py-2 prose-blockquote:italic prose-blockquote:text-gray-700
+                prose-a:text-blue-600 prose-a:underline hover:prose-a:text-blue-700
+                prose-strong:text-gray-900 prose-strong:font-bold
+                prose-em:italic
+                prose-ul:my-4 prose-ul:list-disc prose-ol:my-4 prose-ol:list-decimal
                 prose-li:text-gray-700 prose-li:my-1
-                prose-table:border-collapse prose-table:w-full
+                prose-hr:border-t prose-hr:border-gray-300 prose-hr:my-8
+                prose-table:border-collapse prose-table:w-full prose-table:my-6
                 prose-th:bg-gray-100 prose-th:border prose-th:border-gray-300 prose-th:px-4 prose-th:py-2 prose-th:text-left prose-th:font-semibold prose-th:text-gray-800
                 prose-td:border prose-td:border-gray-300 prose-td:px-4 prose-td:py-2 prose-td:text-gray-700"
               dangerouslySetInnerHTML={{ __html: html }}
