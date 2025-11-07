@@ -4,11 +4,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import DOMPurify from 'isomorphic-dompurify'
 import mermaid from 'mermaid'
-
-interface MarkdownFile {
-  path: string
-  name: string
-}
+import FileTree from './FileTree'
+import { FileNode } from '@/app/api/files/route'
 
 interface MarkdownContent {
   content: string
@@ -17,7 +14,7 @@ interface MarkdownContent {
 }
 
 export default function MarkdownPreviewPage() {
-  const [files, setFiles] = useState<MarkdownFile[]>([])
+  const [fileTree, setFileTree] = useState<FileNode[]>([])
   const [selectedFile, setSelectedFile] = useState<string | null>(null)
   const [markdown, setMarkdown] = useState('')
   const [html, setHtml] = useState('')
@@ -70,11 +67,7 @@ export default function MarkdownPreviewPage() {
     try {
       const response = await fetch('/api/files')
       const data = await response.json()
-      const formattedFiles = data.map((path: string) => ({
-        path,
-        name: path.split('/').pop()
-      }))
-      setFiles(formattedFiles)
+      setFileTree(data)
     } catch (err) {
       setError('Failed to fetch files')
     }
@@ -118,22 +111,11 @@ export default function MarkdownPreviewPage() {
       <div className="flex flex-1 overflow-hidden">
         <aside className="w-80 bg-white border-r border-gray-200 p-6 overflow-y-auto">
           <h2 className="text-xl font-semibold mb-4 text-gray-800">Markdown Files</h2>
-          {files.length === 0 ? (
-            <p className="text-gray-500">No markdown files found</p>
-          ) : (
-            <ul className="space-y-2">
-              {files.map((file) => (
-                <li
-                  key={file.path}
-                  onClick={() => fetchMarkdown(file.path)}
-                  className={`p-3 bg-gray-50 rounded-lg cursor-pointer transition-all hover:bg-gray-100 break-words
-                    ${selectedFile === file.path ? 'bg-purple-600 text-white hover:bg-purple-700' : ''}`}
-                >
-                  {file.name}
-                </li>
-              ))}
-            </ul>
-          )}
+          <FileTree
+            tree={fileTree}
+            onFileSelect={fetchMarkdown}
+            selectedFile={selectedFile}
+          />
         </aside>
 
         <main className="flex-1 p-8 overflow-y-auto bg-white">
