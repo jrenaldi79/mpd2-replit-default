@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import DOMPurify from 'isomorphic-dompurify'
+import mermaid from 'mermaid'
 
 interface MarkdownFile {
   path: string
@@ -22,10 +23,48 @@ export default function MarkdownPreviewPage() {
   const [html, setHtml] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    mermaid.initialize({ startOnLoad: false, theme: 'default' })
+  }, [])
 
   useEffect(() => {
     fetchFiles()
   }, [])
+
+  useEffect(() => {
+    const renderMermaidDiagrams = async () => {
+      if (!contentRef.current || !html) return
+
+      try {
+        const codeBlocks = contentRef.current.querySelectorAll('code.language-mermaid')
+        
+        codeBlocks.forEach((codeBlock) => {
+          const pre = codeBlock.parentElement
+          if (!pre || pre.tagName !== 'PRE') return
+
+          const mermaidCode = codeBlock.textContent || ''
+          
+          const mermaidDiv = document.createElement('div')
+          mermaidDiv.className = 'mermaid'
+          mermaidDiv.textContent = mermaidCode
+          
+          pre.replaceWith(mermaidDiv)
+        })
+
+        if (codeBlocks.length > 0) {
+          await mermaid.run({
+            querySelector: '.mermaid',
+          })
+        }
+      } catch (error) {
+        console.error('Failed to render Mermaid diagrams:', error)
+      }
+    }
+
+    renderMermaidDiagrams()
+  }, [html])
 
   const fetchFiles = async () => {
     try {
@@ -111,6 +150,7 @@ export default function MarkdownPreviewPage() {
           )}
           {selectedFile && !loading && html && (
             <div
+              ref={contentRef}
               className="prose prose-lg max-w-none
                 prose-h1:border-b-2 prose-h1:border-gray-200 prose-h1:pb-2
                 prose-h2:mt-8 prose-h2:mb-4
