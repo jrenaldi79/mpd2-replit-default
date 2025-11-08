@@ -111,6 +111,21 @@ describe('Tasks API - GET /api/tasks', () => {
       details: 'Database connection failed',
     })
   })
+
+  it('should handle exceptions in GET handler', async () => {
+    ;(supabase.from as jest.Mock).mockImplementation(() => {
+      throw new Error('Unexpected error')
+    })
+
+    const response = await GET()
+    const data = await response.json()
+
+    expect(response.status).toBe(500)
+    expect(data).toEqual({
+      error: 'Internal server error',
+      details: 'Unexpected error',
+    })
+  })
 })
 
 describe('Tasks API - POST /api/tasks', () => {
@@ -277,6 +292,20 @@ describe('Tasks API - POST /api/tasks', () => {
       error: 'Failed to create task',
       details: 'Insert failed',
     })
+  })
+
+  it('should handle exceptions in POST handler', async () => {
+    const request = new Request('http://localhost:3000/api/tasks', {
+      method: 'POST',
+      body: '{incomplete json',
+    })
+
+    const response = await POST(request)
+    const data = await response.json()
+
+    expect(response.status).toBe(500)
+    expect(data.error).toBe('Internal server error')
+    expect(data.details).toBeDefined()
   })
 })
 
@@ -468,6 +497,20 @@ describe('Tasks API - PATCH /api/tasks/[id]', () => {
       })
     )
   })
+
+  it('should handle exceptions in PATCH handler', async () => {
+    const request = new Request('http://localhost:3000/api/tasks/123', {
+      method: 'PATCH',
+      body: '{incomplete json',
+    })
+
+    const response = await PATCH(request, { params: { id: '123' } })
+    const data = await response.json()
+
+    expect(response.status).toBe(500)
+    expect(data.error).toBe('Internal server error')
+    expect(data.details).toBeDefined()
+  })
 })
 
 describe('Tasks API - DELETE /api/tasks/[id]', () => {
@@ -526,6 +569,25 @@ describe('Tasks API - DELETE /api/tasks/[id]', () => {
     expect(data).toEqual({
       error: 'Failed to delete task',
       details: 'Delete failed',
+    })
+  })
+
+  it('should handle exceptions in DELETE handler', async () => {
+    ;(supabase.from as jest.Mock).mockImplementation(() => {
+      throw new Error('Unexpected deletion error')
+    })
+
+    const request = new Request('http://localhost:3000/api/tasks/123', {
+      method: 'DELETE',
+    })
+
+    const response = await DELETE(request, { params: { id: '123' } })
+    const data = await response.json()
+
+    expect(response.status).toBe(500)
+    expect(data).toEqual({
+      error: 'Internal server error',
+      details: 'Unexpected deletion error',
     })
   })
 })
