@@ -69,7 +69,11 @@ export default function MarkdownPreviewPage() {
           })
         }
       } catch (error) {
-        console.error('Failed to render Mermaid diagrams:', error)
+        // Silently handle Mermaid rendering errors - the document will still display
+        // Some complex diagrams may not render, but this is non-critical
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Some Mermaid diagrams could not be rendered:', error)
+        }
       }
     }
 
