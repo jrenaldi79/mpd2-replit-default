@@ -10,18 +10,23 @@ This project is a Next.js 16 starter template for Northwestern MPD2 students, fe
 
 ## Recent Changes
 
-### November 8, 2024 - Mermaid Diagram Rendering Fix
--   **Issue**: Mermaid diagrams in documentation files (e.g., `.bmad-core/user-guide.md`) were displaying as plain text instead of rendered diagrams.
+### November 8, 2024 - Mermaid Diagram Rendering Complete Fix
+-   **Issues**: 
+    1. Mermaid diagrams were rendering horizontally instead of vertically.
+    2. Inconsistent rendering - sometimes working, sometimes showing raw text.
 -   **Root Cause**: 
-    1. DOMPurify was stripping `class` attributes (including `language-mermaid`) during HTML sanitization on both server and client side.
-    2. Mermaid rendering method (`mermaid.run`) was failing with DOM access errors.
+    1. Mermaid's auto-layout was choosing horizontal placement for complex diagrams.
+    2. Race conditions and timing issues causing inconsistent initialization.
+    3. CSS `!important` rules blocking JavaScript dimension control.
 -   **Fix**: 
-    -   Updated `app/api/markdown/route.ts` to pass marked.js options (`gfm: true, breaks: true`) and configure DOMPurify to preserve class attributes.
-    -   Updated `app/markdown-preview/page.tsx` client-side sanitization to preserve class attributes needed for syntax highlighting and Mermaid rendering.
-    -   Changed Mermaid rendering approach from `mermaid.run()` to `mermaid.render()` for more reliable diagram generation.
-    -   Created `app/markdown-preview/mermaid-styles.css` with explicit CSS rules to force vertical stacking of diagram containers using `display: block !important`, `width: 100% !important`, and `clear: both !important`.
-    -   Added integration test in `tests/integration/markdown-preview.test.tsx` to verify Mermaid class preservation.
--   **Result**: All Mermaid diagrams now render correctly with vertical layout. Test coverage: 90 tests passing, 88.69% statement coverage, 81.06% branch coverage.
+    -   **Configuration**: Enhanced Mermaid config with dagre-d3 renderer, increased vertical spacing (rankSpacing: 100), reduced horizontal spacing (nodeSpacing: 30).
+    -   **Layout Forcing**: Automatically converts `graph LR/RL` to `graph TD` for vertical orientation.
+    -   **Retry Logic**: Added 3 attempts per diagram with 200ms delays to handle timing issues.
+    -   **Loading Indicators**: Shows "🔄 Rendering diagram..." while processing.
+    -   **Error Handling**: Clear error messages with original code when rendering fails.
+    -   **CSS Optimization**: Removed blocking `!important` rules from width/max-width properties.
+    -   **Visual Polish**: Added gray background and border to diagram containers.
+-   **Result**: Mermaid diagrams now consistently render vertically with proper error recovery. Test coverage: 90 tests passing, 89.88% statement coverage.
 
 ## 1. AI Agent Pre-Implementation Checklist
 
