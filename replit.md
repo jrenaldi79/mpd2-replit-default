@@ -19,7 +19,7 @@ This project is a Next.js 16 starter template for Northwestern MPD2 students, fe
     -   Updated `app/api/markdown/route.ts` to pass marked.js options (`gfm: true, breaks: true`) and configure DOMPurify to preserve class attributes.
     -   Updated `app/markdown-preview/page.tsx` client-side sanitization to preserve class attributes needed for syntax highlighting and Mermaid rendering.
     -   Changed Mermaid rendering approach from `mermaid.run()` to `mermaid.render()` for more reliable diagram generation.
-    -   Added CSS styling to ensure diagrams display vertically with proper spacing and responsive sizing.
+    -   Created `app/markdown-preview/mermaid-styles.css` with explicit CSS rules to force vertical stacking of diagram containers using `display: block !important`, `width: 100% !important`, and `clear: both !important`.
     -   Added integration test in `tests/integration/markdown-preview.test.tsx` to verify Mermaid class preservation.
 -   **Result**: All Mermaid diagrams now render correctly with vertical layout. Test coverage: 90 tests passing, 88.69% statement coverage, 81.06% branch coverage.
 

@@ -1,0 +1,24 @@
+/* Mermaid diagram container styles */
+.mermaid-container {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 1.5rem 0 !important;
+  overflow-x: auto !important;
+  clear: both !important;
+}
+
+.mermaid-container svg {
+  display: block !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 auto !important;
+}
+
+/* Ensure diagrams don't float or display inline */
+.mermaid-container::before,
+.mermaid-container::after {
+  content: "";
+  display: table;
+  clear: both;
+}

@@ -7,6 +7,7 @@ import DOMPurify from 'isomorphic-dompurify'
 import mermaid from 'mermaid'
 import hljs from 'highlight.js'
 import './highlight-theme.css'
+import './mermaid-styles.css'
 import FileTree from './FileTree'
 import { FileNode } from '@/app/api/files/route'
 
