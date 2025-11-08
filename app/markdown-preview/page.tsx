@@ -56,14 +56,17 @@ export default function MarkdownPreviewPage() {
         
         if (codeBlocks.length === 0) return
 
-        // Initialize mermaid once
+        // Initialize mermaid once with forced vertical orientation
         mermaid.initialize({ 
           startOnLoad: false, 
           theme: 'default',
           securityLevel: 'loose',
           flowchart: {
-            useMaxWidth: true,
-            htmlLabels: true
+            useMaxWidth: false,
+            htmlLabels: true,
+            curve: 'basis',
+            rankSpacing: 50,
+            nodeSpacing: 50
           }
         })
         
@@ -88,11 +91,28 @@ export default function MarkdownPreviewPage() {
             // Insert the SVG into the container
             container.innerHTML = svg
             
-            // Ensure the SVG itself uses full width
+            // Force vertical layout by manipulating SVG dimensions
             const svgElement = container.querySelector('svg')
             if (svgElement) {
-              svgElement.style.maxWidth = '100%'
-              svgElement.style.height = 'auto'
+              // Get the SVG's viewBox to understand its natural dimensions
+              const viewBox = svgElement.getAttribute('viewBox')
+              if (viewBox) {
+                const [, , width, height] = viewBox.split(' ').map(Number)
+                // If width > height, the diagram is laid out horizontally
+                // Force it to render taller by setting a max-width
+                if (width > height * 1.5) {
+                  svgElement.style.maxWidth = '800px'
+                  svgElement.style.width = '100%'
+                  svgElement.style.height = 'auto'
+                } else {
+                  svgElement.style.maxWidth = '100%'
+                  svgElement.style.height = 'auto'
+                }
+              } else {
+                svgElement.style.maxWidth = '800px'
+                svgElement.style.width = '100%'
+                svgElement.style.height = 'auto'
+              }
             }
             
             // Replace the pre element with the rendered diagram

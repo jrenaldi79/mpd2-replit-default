@@ -1,18 +1,24 @@
-/* Mermaid diagram container styles */
+/* Mermaid diagram container styles - force vertical layout */
 .mermaid-container {
   display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
+  width: 100%;
   margin: 1.5rem 0 !important;
   overflow-x: auto !important;
+  overflow-y: visible !important;
   clear: both !important;
+  /* max-width controlled by JavaScript */
 }
 
 .mermaid-container svg {
   display: block !important;
-  max-width: 100% !important;
   height: auto !important;
   margin: 0 auto !important;
+  /* width and max-width controlled by JavaScript based on diagram orientation */
+}
+
+/* Force flowchart nodes to stack vertically */
+.mermaid-container svg .nodes {
+  flex-direction: column !important;
 }
 
 /* Ensure diagrams don't float or display inline */
