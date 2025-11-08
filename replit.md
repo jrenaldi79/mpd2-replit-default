@@ -12,12 +12,16 @@ This project is a Next.js 16 starter template for Northwestern MPD2 students, fe
 
 ### November 8, 2024 - Mermaid Diagram Rendering Fix
 -   **Issue**: Mermaid diagrams in documentation files (e.g., `.bmad-core/user-guide.md`) were displaying as plain text instead of rendered diagrams.
--   **Root Cause**: DOMPurify was stripping `class` attributes (including `language-mermaid`) during HTML sanitization on both server and client side.
+-   **Root Cause**: 
+    1. DOMPurify was stripping `class` attributes (including `language-mermaid`) during HTML sanitization on both server and client side.
+    2. Mermaid rendering method (`mermaid.run`) was failing with DOM access errors.
 -   **Fix**: 
     -   Updated `app/api/markdown/route.ts` to pass marked.js options (`gfm: true, breaks: true`) and configure DOMPurify to preserve class attributes.
     -   Updated `app/markdown-preview/page.tsx` client-side sanitization to preserve class attributes needed for syntax highlighting and Mermaid rendering.
+    -   Changed Mermaid rendering approach from `mermaid.run()` to `mermaid.render()` for more reliable diagram generation.
+    -   Added CSS styling to ensure diagrams display vertically with proper spacing and responsive sizing.
     -   Added integration test in `tests/integration/markdown-preview.test.tsx` to verify Mermaid class preservation.
--   **Result**: All Mermaid diagrams now render correctly. Test coverage: 90 tests passing, 88.69% statement coverage, 81.06% branch coverage.
+-   **Result**: All Mermaid diagrams now render correctly with vertical layout. Test coverage: 90 tests passing, 88.69% statement coverage, 81.06% branch coverage.
 
 ## 1. AI Agent Pre-Implementation Checklist
 

@@ -79,12 +79,20 @@ export default function MarkdownPreviewPage() {
             // Create a container div
             const container = document.createElement('div')
             container.className = 'mermaid-container my-6'
+            container.style.cssText = 'display: block; width: 100%; overflow-x: auto; margin: 1.5rem 0;'
             
             // Use mermaid.render to render the diagram
             const { svg } = await mermaid.render(id, mermaidCode)
             
             // Insert the SVG into the container
             container.innerHTML = svg
+            
+            // Ensure the SVG itself uses full width
+            const svgElement = container.querySelector('svg')
+            if (svgElement) {
+              svgElement.style.maxWidth = '100%'
+              svgElement.style.height = 'auto'
+            }
             
             // Replace the pre element with the rendered diagram
             pre.replaceWith(container)
