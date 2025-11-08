@@ -2,72 +2,97 @@
  * @jest-environment node
  */
 
+// Mock @supabase/supabase-js before any imports
+const mockCreateClient = jest.fn(() => ({
+  from: jest.fn(),
+}))
+
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: mockCreateClient,
+}))
+
 describe('Supabase Client Configuration', () => {
+  beforeAll(() => {
+    // Set environment variables before importing
+    process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
+  })
+
+  it('should call createClient with correct environment variables', () => {
+    // Import after mock is set up
+    const { supabase } = require('@/lib/supabase')
+
+    // Verify createClient was called with the correct parameters
+    expect(mockCreateClient).toHaveBeenCalledWith(
+      'https://test.supabase.co',
+      'test-anon-key'
+    )
+
+    // Verify the exported client is defined and functional
+    expect(supabase).toBeDefined()
+    expect(supabase.from).toBeDefined()
+  })
+})
+
+describe('Supabase Client Configuration - Error Handling', () => {
   const originalEnv = process.env
 
   beforeEach(() => {
     jest.resetModules()
-    process.env = { ...originalEnv }
-    jest.clearAllMocks()
   })
 
   afterEach(() => {
     process.env = originalEnv
-  })
-
-  it('should require NEXT_PUBLIC_SUPABASE_URL environment variable', () => {
-    process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
-
-    // Should not throw when both env vars are present
-    expect(() => {
-      jest.isolateModules(() => {
-        require('@/lib/supabase')
-      })
-    }).not.toThrow()
+    jest.resetModules()
   })
 
   it('should throw error when NEXT_PUBLIC_SUPABASE_URL is missing', () => {
-    process.env.NEXT_PUBLIC_SUPABASE_URL = ''
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
+    jest.isolateModules(() => {
+      process.env.NEXT_PUBLIC_SUPABASE_URL = ''
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
 
-    expect(() => {
-      jest.isolateModules(() => {
+      expect(() => {
         require('@/lib/supabase')
-      })
-    }).toThrow('Missing Supabase environment variables')
+      }).toThrow('Missing Supabase environment variables')
+    })
   })
 
   it('should throw error when NEXT_PUBLIC_SUPABASE_ANON_KEY is missing', () => {
-    process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = ''
+    jest.isolateModules(() => {
+      process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = ''
 
-    expect(() => {
-      jest.isolateModules(() => {
+      expect(() => {
         require('@/lib/supabase')
-      })
-    }).toThrow('Missing Supabase environment variables')
+      }).toThrow('Missing Supabase environment variables')
+    })
   })
 
   it('should throw error when both environment variables are missing', () => {
-    delete process.env.NEXT_PUBLIC_SUPABASE_URL
-    delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    jest.isolateModules(() => {
+      const envBackup = { ...process.env }
+      delete process.env.NEXT_PUBLIC_SUPABASE_URL
+      delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-    expect(() => {
-      jest.isolateModules(() => {
+      expect(() => {
         require('@/lib/supabase')
-      })
-    }).toThrow('Missing Supabase environment variables')
+      }).toThrow('Missing Supabase environment variables')
+
+      process.env = envBackup
+    })
   })
 
   it('should include helpful error message about .env file', () => {
-    delete process.env.NEXT_PUBLIC_SUPABASE_URL
-    delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    jest.isolateModules(() => {
+      const envBackup = { ...process.env }
+      delete process.env.NEXT_PUBLIC_SUPABASE_URL
+      delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-    expect(() => {
-      jest.isolateModules(() => {
+      expect(() => {
         require('@/lib/supabase')
-      })
-    }).toThrow(/Please check your .env file/)
+      }).toThrow(/Please check your .env file/)
+
+      process.env = envBackup
+    })
   })
 })
