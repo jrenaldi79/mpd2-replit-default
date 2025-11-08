@@ -31,8 +31,15 @@ describe('GET /api/files', () => {
     const data = await response.json()
 
     expect(response.status).toBe(200)
-    expect(data).toContain('README.md')
-    expect(data).not.toContain('test.js')
+    expect(Array.isArray(data)).toBe(true)
+    
+    const hasReadme = data.some((item: any) => item.name === 'README.md' && item.type === 'file')
+    const hasTestJs = data.some((item: any) => item.name === 'test.js')
+    const hasDocsFolder = data.some((item: any) => item.name === 'docs' && item.type === 'folder')
+    
+    expect(hasReadme).toBe(true)
+    expect(hasTestJs).toBe(false)
+    expect(hasDocsFolder).toBe(true)
   })
 
   it('excludes specified directories', async () => {
@@ -47,7 +54,8 @@ describe('GET /api/files', () => {
     const data = await response.json()
 
     expect(mockReaddir).toHaveBeenCalledTimes(1)
-    expect(data).toContain('README.md')
+    const hasReadme = data.some((item: any) => item.name === 'README.md')
+    expect(hasReadme).toBe(true)
   })
 
   it('handles errors gracefully', async () => {

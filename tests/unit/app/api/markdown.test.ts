@@ -5,10 +5,6 @@ import { GET } from '../../../../app/api/markdown/route'
 import { NextRequest } from 'next/server'
 import fs from 'fs/promises'
 
-// Mock the Request global for Next.js
-global.Request = jest.fn() as any
-global.Response = jest.fn() as any
-
 // Mock modules
 jest.mock('fs/promises')
 jest.mock('marked', () => ({

@@ -4,6 +4,15 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import MarkdownPreviewPage from '../../app/markdown-preview/page'
 
+// Mock mermaid
+jest.mock('mermaid', () => ({
+  __esModule: true,
+  default: {
+    initialize: jest.fn(),
+    run: jest.fn().mockResolvedValue(undefined),
+  }
+}))
+
 // Mock fetch
 global.fetch = jest.fn()
 
@@ -14,19 +23,29 @@ describe('MarkdownPreviewPage Integration', () => {
 
   it('fetches and displays markdown files on mount', async () => {
     const mockFiles = [
-      { path: 'README.md', name: 'README.md' },
-      { path: 'docs/guide.md', name: 'guide.md' }
+      { path: 'README.md', name: 'README.md', type: 'file' },
+      { path: 'docs', name: 'docs', type: 'folder', children: [
+        { path: 'docs/guide.md', name: 'guide.md', type: 'file' }
+      ]}
     ]
     
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async () => mockFiles.map(f => f.path)
+      json: async () => mockFiles
     })
 
     render(<MarkdownPreviewPage />)
 
     await waitFor(() => {
       expect(screen.getByText('README.md')).toBeInTheDocument()
+      expect(screen.getByText('docs')).toBeInTheDocument()
+    })
+    
+    const user = userEvent.setup()
+    const docsFolder = screen.getByText('docs')
+    await user.click(docsFolder)
+    
+    await waitFor(() => {
       expect(screen.getByText('guide.md')).toBeInTheDocument()
     })
   })
@@ -42,7 +61,9 @@ describe('MarkdownPreviewPage Integration', () => {
   })
 
   it('loads and displays markdown content when file is clicked', async () => {
-    const mockFiles = ['README.md']
+    const mockFiles = [
+      { path: 'README.md', name: 'README.md', type: 'file' }
+    ]
     const mockMarkdownResponse = {
       content: '# Test',
       html: '<h1>Test</h1>',
@@ -75,7 +96,9 @@ describe('MarkdownPreviewPage Integration', () => {
   })
 
   it('displays error when markdown load fails', async () => {
-    const mockFiles = ['README.md']
+    const mockFiles = [
+      { path: 'README.md', name: 'README.md', type: 'file' }
+    ]
 
     ;(global.fetch as jest.Mock)
       .mockResolvedValueOnce({

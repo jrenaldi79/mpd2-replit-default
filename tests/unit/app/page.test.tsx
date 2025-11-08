@@ -18,14 +18,18 @@ describe('HomePage', () => {
 
   it('renders navigation links', () => {
     render(<HomePage />)
-    const tasksLink = screen.getByRole('link', { name: /tasks example/i })
-    const markdownLink = screen.getByRole('link', { name: /bmad docs/i })
+    const tasksLinks = screen.getAllByRole('link', { name: /tasks example/i })
+    const markdownLinks = screen.getAllByRole('link', { name: /bmad docs/i })
+    const testDashboardLinks = screen.getAllByRole('link', { name: /test dashboard/i })
     
-    expect(tasksLink).toBeInTheDocument()
-    expect(tasksLink).toHaveAttribute('href', '/tasks')
+    expect(tasksLinks.length).toBeGreaterThan(0)
+    expect(tasksLinks[0]).toHaveAttribute('href', '/tasks')
     
-    expect(markdownLink).toBeInTheDocument()
-    expect(markdownLink).toHaveAttribute('href', '/markdown-preview')
+    expect(markdownLinks.length).toBeGreaterThan(0)
+    expect(markdownLinks[0]).toHaveAttribute('href', '/markdown-preview')
+    
+    expect(testDashboardLinks.length).toBeGreaterThan(0)
+    expect(testDashboardLinks[0]).toHaveAttribute('href', '/test-dashboard')
   })
 
   it('renders the TDD framework section', () => {
@@ -49,8 +53,8 @@ describe('HomePage', () => {
 
   it('renders link to Supabase tasks example', () => {
     render(<HomePage />)
-    const tasksExampleLink = screen.getByRole('link', { name: /view tasks example/i })
-    expect(tasksExampleLink).toBeInTheDocument()
-    expect(tasksExampleLink).toHaveAttribute('href', '/tasks')
+    const tasksExampleLinks = screen.getAllByRole('link', { name: /view tasks example/i })
+    expect(tasksExampleLinks.length).toBeGreaterThan(0)
+    expect(tasksExampleLinks[0]).toHaveAttribute('href', '/tasks')
   })
 })
