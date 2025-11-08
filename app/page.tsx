@@ -25,6 +25,12 @@ export default function HomePage() {
               >
                 📚 BMAD Docs
               </Link>
+              <Link 
+                href="/test-dashboard"
+                className="text-purple-600 hover:text-purple-700 font-medium transition-colors"
+              >
+                🧪 Test Dashboard
+              </Link>
             </nav>
           </div>
         </div>
@@ -173,6 +179,19 @@ export default function HomePage() {
                 <strong>⚠️ Important:</strong> The AI assistant will refuse to write implementation code until tests are written first. 
                 This ensures you always have a safety net and clear specifications for your features.
               </p>
+            </div>
+
+            <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+              <p className="text-blue-800 font-semibold mb-2">🎯 New: Visual Test Dashboard</p>
+              <p className="text-blue-700 mb-4">
+                Not comfortable with the command line? Use our new Test Dashboard to run tests and see results in a friendly interface!
+              </p>
+              <Link 
+                href="/test-dashboard"
+                className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              >
+                Open Test Dashboard →
+              </Link>
             </div>
 
             <div className="mt-4 flex gap-3">
