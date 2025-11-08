@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import type { Task } from '@/types/supabase'
+import Navigation from '../components/Navigation'
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -118,8 +119,10 @@ export default function TasksPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
+      <Navigation />
+      <div className="container mx-auto px-6 py-12">
+        <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow-xl p-8">
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
@@ -237,6 +240,7 @@ export default function TasksPage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   )
 }

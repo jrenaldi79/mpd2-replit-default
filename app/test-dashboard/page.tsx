@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Navigation from '../components/Navigation';
 
 interface TestResult {
   title: string;
@@ -92,8 +93,10 @@ export default function TestDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      <div className="container mx-auto px-6 py-8">
+        <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Test Dashboard</h1>
           <p className="text-gray-600">Run your tests and see the results in a friendly format</p>
@@ -339,6 +342,7 @@ export default function TestDashboard() {
             <p className="text-gray-600">Click the button above to run all your tests and see the results</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

@@ -1,40 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
 import ExampleComponent from './components/ExampleComponent'
+import Navigation from './components/Navigation'
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-800">
-              My Next.js App
-            </h1>
-            <nav className="flex gap-4">
-              <Link 
-                href="/tasks"
-                className="text-purple-600 hover:text-purple-700 font-medium transition-colors"
-              >
-                ✅ Tasks Example
-              </Link>
-              <Link 
-                href="/markdown-preview"
-                className="text-purple-600 hover:text-purple-700 font-medium transition-colors"
-              >
-                📚 BMAD Docs
-              </Link>
-              <Link 
-                href="/test-dashboard"
-                className="text-purple-600 hover:text-purple-700 font-medium transition-colors"
-              >
-                🧪 Test Dashboard
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Navigation />
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-12">
