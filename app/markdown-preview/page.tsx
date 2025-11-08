@@ -48,85 +48,173 @@ export default function MarkdownPreviewPage() {
     const renderMermaidDiagrams = async () => {
       if (!contentRef.current || !html) return
 
-      // Wait for next tick to ensure DOM is fully mounted
-      await new Promise(resolve => setTimeout(resolve, 100))
+      // Wait for DOM to be ready and add retries
+      await new Promise(resolve => setTimeout(resolve, 150))
 
       try {
         const codeBlocks = contentRef.current.querySelectorAll('code.language-mermaid')
         
         if (codeBlocks.length === 0) return
 
-        // Initialize mermaid once with forced vertical orientation
+        // Show loading indicators
+        codeBlocks.forEach(block => {
+          const pre = block.parentElement
+          if (pre && pre.tagName === 'PRE') {
+            pre.style.position = 'relative'
+            const loader = document.createElement('div')
+            loader.className = 'mermaid-loader'
+            loader.innerHTML = '🔄 Rendering diagram...'
+            loader.style.cssText = 'position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.95); padding: 4px 12px; border-radius: 4px; font-size: 12px; color: #6b7280; font-style: italic; z-index: 10;'
+            pre.appendChild(loader)
+          }
+        })
+
+        // Configure mermaid for vertical layouts with improved settings
         mermaid.initialize({ 
           startOnLoad: false, 
           theme: 'default',
           securityLevel: 'loose',
+          themeVariables: {
+            primaryColor: '#f3f4f6',
+            primaryTextColor: '#111827',
+            primaryBorderColor: '#d1d5db',
+            lineColor: '#9ca3af',
+            secondaryColor: '#e5e7eb',
+            background: '#ffffff',
+            mainBkg: '#f9fafb',
+            secondBkg: '#f3f4f6',
+            tertiaryColor: '#ffffff'
+          },
           flowchart: {
             useMaxWidth: false,
             htmlLabels: true,
             curve: 'basis',
-            rankSpacing: 50,
-            nodeSpacing: 50
+            rankSpacing: 100,  // Increase vertical spacing
+            nodeSpacing: 30,   // Reduce horizontal spacing
+            diagramPadding: 20,
+            defaultRenderer: 'dagre-d3'  // Better layout engine
+          },
+          sequence: {
+            useMaxWidth: false,
+            diagramMarginX: 50,
+            diagramMarginY: 20,
+            actorMargin: 50,
+            width: 150,
+            height: 65,
+            boxMargin: 10,
+            boxTextMargin: 5,
+            noteMargin: 10,
+            messageMargin: 35
+          },
+          gitGraph: {
+            mainBranchName: 'main',
+            showCommitLabel: true,
+            showBranches: true,
+            rotateCommitLabel: true
           }
         })
         
-        // Process each mermaid block individually
+        // Process each mermaid block with retries
         for (let i = 0; i < codeBlocks.length; i++) {
           const codeBlock = codeBlocks[i]
           const pre = codeBlock.parentElement
           if (!pre || pre.tagName !== 'PRE') continue
 
-          const mermaidCode = codeBlock.textContent || ''
-          const id = `mermaid-${Date.now()}-${i}`
+          let mermaidCode = codeBlock.textContent || ''
           
-          try {
-            // Create a container div
-            const container = document.createElement('div')
-            container.className = 'mermaid-container my-6'
-            container.style.cssText = 'display: block; width: 100%; overflow-x: auto; margin: 1.5rem 0;'
-            
-            // Use mermaid.render to render the diagram
-            const { svg } = await mermaid.render(id, mermaidCode)
-            
-            // Insert the SVG into the container
-            container.innerHTML = svg
-            
-            // Force vertical layout by manipulating SVG dimensions
-            const svgElement = container.querySelector('svg')
-            if (svgElement) {
-              // Get the SVG's viewBox to understand its natural dimensions
-              const viewBox = svgElement.getAttribute('viewBox')
-              if (viewBox) {
-                const [, , width, height] = viewBox.split(' ').map(Number)
-                // If width > height, the diagram is laid out horizontally
-                // Force it to render taller by setting a max-width
-                if (width > height * 1.5) {
-                  svgElement.style.maxWidth = '800px'
-                  svgElement.style.width = '100%'
-                  svgElement.style.height = 'auto'
-                } else {
-                  svgElement.style.maxWidth = '100%'
-                  svgElement.style.height = 'auto'
-                }
-              } else {
-                svgElement.style.maxWidth = '800px'
-                svgElement.style.width = '100%'
+          // Force vertical orientation for flowcharts
+          if (mermaidCode.includes('graph') && !mermaidCode.includes('graph TD') && !mermaidCode.includes('graph TB')) {
+            // Replace LR (left-right) with TD (top-down)
+            mermaidCode = mermaidCode.replace(/graph\s+LR/g, 'graph TD')
+            mermaidCode = mermaidCode.replace(/graph\s+RL/g, 'graph TD')
+            // If no direction specified, add TD
+            mermaidCode = mermaidCode.replace(/^(\s*graph)(\s+[^TBLR])/, '$1 TD$2')
+          }
+          
+          let attempts = 3
+          let rendered = false
+          
+          while (attempts > 0 && !rendered) {
+            try {
+              // Generate unique ID for each attempt
+              const id = `mermaid-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 5)}`
+              
+              // Create container
+              const container = document.createElement('div')
+              container.className = 'mermaid-container my-6'
+              container.style.cssText = 'display: block; width: 100%; max-width: 100%; overflow-x: auto; margin: 1.5rem 0; background: #f9fafb; padding: 1.5rem; border-radius: 8px; border: 1px solid #e5e7eb;'
+              
+              // Render diagram
+              const { svg } = await mermaid.render(id, mermaidCode)
+              
+              // Insert SVG
+              container.innerHTML = svg
+              
+              // Optimize SVG dimensions for vertical layout
+              const svgElement = container.querySelector('svg')
+              if (svgElement) {
+                // Remove any fixed dimensions
+                svgElement.removeAttribute('width')
+                svgElement.removeAttribute('height')
+                svgElement.style.maxWidth = '100%'
                 svgElement.style.height = 'auto'
+                
+                // Check viewBox and adjust if needed
+                const viewBox = svgElement.getAttribute('viewBox')
+                if (viewBox) {
+                  const [x, y, width, height] = viewBox.split(' ').map(Number)
+                  
+                  // If diagram is very wide, constrain it
+                  if (width > height * 2) {
+                    container.style.maxWidth = '900px'
+                    container.style.margin = '1.5rem auto'
+                  }
+                  
+                  // Ensure minimum height for better visibility
+                  if (height < 200) {
+                    svgElement.style.minHeight = '200px'
+                  }
+                }
+              }
+              
+              // Replace pre with container
+              pre.replaceWith(container)
+              rendered = true
+              
+            } catch (renderError) {
+              attempts--
+              console.warn(`Mermaid render attempt ${4 - attempts} failed for diagram ${i}:`, renderError)
+              
+              if (attempts > 0) {
+                // Wait before retry
+                await new Promise(resolve => setTimeout(resolve, 200))
+              } else {
+                // All attempts failed - show error with original code
+                const errorContainer = document.createElement('div')
+                errorContainer.className = 'mermaid-error'
+                errorContainer.style.cssText = 'background: #fef2f2; border: 1px solid #fca5a5; padding: 1rem; border-radius: 8px; margin: 1.5rem 0;'
+                errorContainer.innerHTML = `
+                  <div style="color: #dc2626; font-weight: 600; margin-bottom: 0.5rem;">
+                    ⚠️ Diagram rendering failed
+                  </div>
+                  <div style="color: #7f1d1d; font-size: 14px; margin-bottom: 0.75rem;">
+                    The Mermaid diagram could not be rendered. Original code:
+                  </div>
+                  <pre style="background: white; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 13px; border: 1px solid #e5e7eb;"><code>${codeBlock.textContent}</code></pre>
+                `
+                pre.replaceWith(errorContainer)
               }
             }
-            
-            // Replace the pre element with the rendered diagram
-            pre.replaceWith(container)
-          } catch (innerError) {
-            // If this specific diagram fails, leave it as a code block
-            console.warn(`Failed to render mermaid diagram ${i}:`, innerError)
           }
+          
+          // Remove loader
+          const loader = pre.querySelector('.mermaid-loader')
+          if (loader) loader.remove()
         }
       } catch (error) {
-        // Silently handle general Mermaid errors - the document will still display
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('Mermaid rendering error:', error)
-        }
+        console.error('Mermaid initialization error:', error)
+        // Remove all loaders on error
+        contentRef.current?.querySelectorAll('.mermaid-loader').forEach(el => el.remove())
       }
     }
 
