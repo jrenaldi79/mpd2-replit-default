@@ -131,4 +131,41 @@ describe('MarkdownPreviewPage Integration', () => {
       expect(screen.getByText('File not found')).toBeInTheDocument()
     })
   })
+
+  it('preserves language-mermaid class for Mermaid diagram rendering', async () => {
+    const mockFiles = [
+      { path: 'diagram.md', name: 'diagram.md', type: 'file' }
+    ]
+    const mockMarkdownResponse = {
+      content: '```mermaid\ngraph TD\nA-->B\n```',
+      html: '<pre><code class="language-mermaid">graph TD\nA--&gt;B</code></pre>',
+      file: 'diagram.md'
+    }
+
+    ;(global.fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockFiles
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockMarkdownResponse
+      })
+
+    const { container } = render(<MarkdownPreviewPage />)
+
+    await waitFor(() => {
+      expect(screen.getByText('diagram.md')).toBeInTheDocument()
+    })
+
+    const fileItem = screen.getByText('diagram.md')
+    const user = userEvent.setup()
+    await user.click(fileItem)
+
+    await waitFor(() => {
+      const codeBlock = container.querySelector('code.language-mermaid')
+      expect(codeBlock).toBeInTheDocument()
+      expect(codeBlock?.textContent).toContain('graph TD')
+    })
+  })
 })

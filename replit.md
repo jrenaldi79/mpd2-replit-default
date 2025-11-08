@@ -8,6 +8,17 @@ This project is a Next.js 16 starter template for Northwestern MPD2 students, fe
     1.  **A Document Viewer (`/markdown-preview`)**: For referencing BMAD methodology documentation. This part of the app is maintained as is.
     2.  **A Shell Main App (`/`)**: A starter structure for students to replace with their own projects. This is where you will build.
 
+## Recent Changes
+
+### November 8, 2024 - Mermaid Diagram Rendering Fix
+-   **Issue**: Mermaid diagrams in documentation files (e.g., `.bmad-core/user-guide.md`) were displaying as plain text instead of rendered diagrams.
+-   **Root Cause**: DOMPurify was stripping `class` attributes (including `language-mermaid`) during HTML sanitization on both server and client side.
+-   **Fix**: 
+    -   Updated `app/api/markdown/route.ts` to pass marked.js options (`gfm: true, breaks: true`) and configure DOMPurify to preserve class attributes.
+    -   Updated `app/markdown-preview/page.tsx` client-side sanitization to preserve class attributes needed for syntax highlighting and Mermaid rendering.
+    -   Added integration test in `tests/integration/markdown-preview.test.tsx` to verify Mermaid class preservation.
+-   **Result**: All Mermaid diagrams now render correctly. Test coverage: 90 tests passing, 88.69% statement coverage, 81.06% branch coverage.
+
 ## 1. AI Agent Pre-Implementation Checklist
 
 Before writing ANY implementation code, the AI MUST verify:

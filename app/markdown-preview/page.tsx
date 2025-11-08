@@ -114,8 +114,11 @@ export default function MarkdownPreviewPage() {
       
       if (response.ok) {
         setMarkdown(data.content)
-        // Sanitize HTML before setting it
-        const sanitizedHtml = DOMPurify.sanitize(data.html)
+        // Sanitize HTML before setting it (preserve class attributes for syntax highlighting)
+        const sanitizedHtml = DOMPurify.sanitize(data.html, {
+          ADD_ATTR: ['class'],
+          ALLOWED_ATTR: ['class', 'id', 'href', 'target', 'rel', 'src', 'alt', 'title']
+        })
         setHtml(sanitizedHtml)
         setSelectedFile(file)
       } else {

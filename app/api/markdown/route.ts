@@ -42,11 +42,14 @@ export async function GET(request: NextRequest) {
     // Read the file
     const content = await fs.readFile(resolvedPath, 'utf-8')
     
-    // Convert markdown to HTML
-    const rawHtml = await marked(content)
+    // Convert markdown to HTML (marked automatically adds language- classes)
+    const rawHtml = await marked(content, { gfm: true, breaks: true })
     
-    // Sanitize HTML on the server side
-    const html = DOMPurify.sanitize(rawHtml)
+    // Sanitize HTML but preserve language- classes for syntax highlighting
+    const html = DOMPurify.sanitize(rawHtml, {
+      ADD_ATTR: ['class'],
+      ALLOWED_ATTR: ['class', 'id', 'href', 'target', 'rel', 'src', 'alt', 'title']
+    })
     
     return NextResponse.json({ content, html, file: relativePath })
   } catch (error: any) {
