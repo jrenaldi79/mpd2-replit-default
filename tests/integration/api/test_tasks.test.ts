@@ -350,7 +350,7 @@ describe('Tasks API - PATCH /api/tasks/[id]', () => {
       body: JSON.stringify({ completed: true }),
     })
 
-    const response = await PATCH(request, { params: { id: '123' } })
+    const response = await PATCH(request, { params: Promise.resolve({ id: '123' }) })
     const data = await response.json()
 
     expect(supabase.from).toHaveBeenCalledWith('tasks')
@@ -395,7 +395,7 @@ describe('Tasks API - PATCH /api/tasks/[id]', () => {
       body: JSON.stringify({ title: 'Updated Title' }),
     })
 
-    const response = await PATCH(request, { params: { id: '123' } })
+    const response = await PATCH(request, { params: Promise.resolve({ id: '123' }) })
 
     expect(response.status).toBe(200)
   })
@@ -406,7 +406,7 @@ describe('Tasks API - PATCH /api/tasks/[id]', () => {
       body: JSON.stringify({ title: '' }),
     })
 
-    const response = await PATCH(request, { params: { id: '123' } })
+    const response = await PATCH(request, { params: Promise.resolve({ id: '123' }) })
     const data = await response.json()
 
     expect(response.status).toBe(400)
@@ -420,7 +420,7 @@ describe('Tasks API - PATCH /api/tasks/[id]', () => {
       body: JSON.stringify({ title: '   ' }),
     })
 
-    const response = await PATCH(request, { params: { id: '123' } })
+    const response = await PATCH(request, { params: Promise.resolve({ id: '123' }) })
     const data = await response.json()
 
     expect(response.status).toBe(400)
@@ -454,7 +454,7 @@ describe('Tasks API - PATCH /api/tasks/[id]', () => {
       body: JSON.stringify({ completed: true }),
     })
 
-    const response = await PATCH(request, { params: { id: '999' } })
+    const response = await PATCH(request, { params: Promise.resolve({ id: '999' }) })
     const data = await response.json()
 
     expect(response.status).toBe(404)
@@ -504,7 +504,7 @@ describe('Tasks API - PATCH /api/tasks/[id]', () => {
       body: '{incomplete json',
     })
 
-    const response = await PATCH(request, { params: { id: '123' } })
+    const response = await PATCH(request, { params: Promise.resolve({ id: '123' }) })
     const data = await response.json()
 
     expect(response.status).toBe(500)
@@ -535,7 +535,7 @@ describe('Tasks API - DELETE /api/tasks/[id]', () => {
       method: 'DELETE',
     })
 
-    const response = await DELETE(request, { params: { id: '123' } })
+    const response = await DELETE(request, { params: Promise.resolve({ id: '123' }) })
     const data = await response.json()
 
     expect(supabase.from).toHaveBeenCalledWith('tasks')
@@ -562,7 +562,7 @@ describe('Tasks API - DELETE /api/tasks/[id]', () => {
       method: 'DELETE',
     })
 
-    const response = await DELETE(request, { params: { id: '123' } })
+    const response = await DELETE(request, { params: Promise.resolve({ id: '123' }) })
     const data = await response.json()
 
     expect(response.status).toBe(500)
@@ -581,7 +581,7 @@ describe('Tasks API - DELETE /api/tasks/[id]', () => {
       method: 'DELETE',
     })
 
-    const response = await DELETE(request, { params: { id: '123' } })
+    const response = await DELETE(request, { params: Promise.resolve({ id: '123' }) })
     const data = await response.json()
 
     expect(response.status).toBe(500)
