@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
     // If a specific file is requested, return its content
     if (filePath) {
       // Only allow specific documentation files for security
-      const allowedFiles = ['replit.md', 'SUPABASE_SETUP.md']
+      const allowedFiles = ['replit.md', 'SUPABASE_SETUP.md', '.bmad-core/user-guide.md']
       if (!allowedFiles.includes(filePath)) {
         return NextResponse.json(
           { error: 'File not allowed' },

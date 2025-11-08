@@ -19,6 +19,19 @@ export default function HomePage() {
             <p className="text-gray-600 mb-6">
               Welcome to your Next.js starter project! This is a "shell" app that you'll replace with your own amazing idea.
             </p>
+
+            <div className="bg-gradient-to-r from-purple-100 to-pink-100 border-2 border-purple-400 rounded-lg p-5 mb-6">
+              <p className="text-purple-900 font-bold text-lg mb-2">📚 Start Here: BMAD User Guide</p>
+              <p className="text-purple-800 mb-3">
+                New to BMAD? Read the comprehensive user guide to understand the methodology and get started quickly.
+              </p>
+              <Link 
+                href="/markdown-preview?file=.bmad-core/user-guide.md"
+                className="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+              >
+                📖 Read BMAD User Guide
+              </Link>
+            </div>
             
             <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
               <p className="text-blue-800 font-semibold mb-2">💡 Quick Start Guide:</p>
