@@ -12,35 +12,33 @@ Before development begins, BMad follows a structured planning workflow performed
 
 ```mermaid
 flowchart TD
-    subgraph "Phase 1: Planning in Chatwise"
-        A["Start: Project Idea"] --> B{"Optional: Analyst Research"}
-        B -->|Yes| C["Analyst: Brainstorming (Optional)"]
-        B -->|No| G{"Project Brief Available?"}
-        C --> C2["Analyst: Market Research (Optional)"]
-        C2 --> C3["Analyst: Competitor Analysis (Optional)"]
-        C3 --> D["Analyst: Create Project Brief"]
-        D --> G
-        G -->|Yes| E["PM: Create PRD from Brief (Fast Track)"]
-        G -->|No| E2["PM: Interactive PRD Creation (More Questions)"]
-        E --> F["PRD Created with FRs, NFRs, Epics & Stories"]
-        E2 --> F
-        F --> F2{"UX Required?"}
-        F2 -->|Yes| F3["UX Expert: Create Front End Spec"]
-        F2 -->|No| H["Architect: Create Architecture from PRD"]
-        F3 --> F4["UX Expert: Generate UI Prompt for Lovable/V0 (Optional)"]
-        F4 --> H2["Architect: Create Architecture from PRD + UX Spec"]
-        H --> Q{"Early Test Strategy? (Optional)"}
-        H2 --> Q
-        Q -->|Yes| R["QA: Early Test Architecture Input on High-Risk Areas"]
-        Q -->|No| I
-        R --> I["PO: Run Master Checklist"]
-        I --> J{"Documents Aligned?"}
-        J -->|Yes| K["Planning Complete"]
-        J -->|No| L["PO: Update Epics & Stories"]
-        L --> M["Update PRD/Architecture as needed"]
-        M --> I
-        K --> N["✅ Planning Docs Finalized. Ready to Switch to IDE."]
-    end
+    A["Start: Project Idea"] --> B{"Optional: Analyst Research"}
+    B -->|Yes| C["Analyst: Brainstorming (Optional)"]
+    B -->|No| G{"Project Brief Available?"}
+    C --> C2["Analyst: Market Research (Optional)"]
+    C2 --> C3["Analyst: Competitor Analysis (Optional)"]
+    C3 --> D["Analyst: Create Project Brief"]
+    D --> G
+    G -->|Yes| E["PM: Create PRD from Brief (Fast Track)"]
+    G -->|No| E2["PM: Interactive PRD Creation (More Questions)"]
+    E --> F["PRD Created with FRs, NFRs, Epics & Stories"]
+    E2 --> F
+    F --> F2{"UX Required?"}
+    F2 -->|Yes| F3["UX Expert: Create Front End Spec"]
+    F2 -->|No| H["Architect: Create Architecture from PRD"]
+    F3 --> F4["UX Expert: Generate UI Prompt for Lovable/V0 (Optional)"]
+    F4 --> H2["Architect: Create Architecture from PRD + UX Spec"]
+    H --> Q{"Early Test Strategy? (Optional)"}
+    H2 --> Q
+    Q -->|Yes| R["QA: Early Test Architecture Input on High-Risk Areas"]
+    Q -->|No| I
+    R --> I["PO: Run Master Checklist"]
+    I --> J{"Documents Aligned?"}
+    J -->|Yes| K["Planning Complete"]
+    J -->|No| L["PO: Update Epics & Stories"]
+    L --> M["Update PRD/Architecture as needed"]
+    M --> I
+    K --> N["✅ Planning Docs Finalized. Ready to Switch to IDE."]
 
     style A fill:#f5f5f5,color:#000
     style B fill:#e3f2fd,color:#000
@@ -82,43 +80,41 @@ Once you are in Replit, the first step is to shard the planning documents. After
 
 ```mermaid
 flowchart TD
-    subgraph "Phase 2: Setup and Development in Replit IDE"
-        O["PO: Shard Documents (PRD & Architecture)"] --> P["Ready for SM/Dev Cycle"]
-        P --> A["Development Phase Start"]
-        A --> B["SM: Reviews Previous Story Dev/QA Notes"]
-        B --> B2["SM: Drafts Next Story from Sharded Epic + Architecture"]
-        B2 --> S{"High-Risk Story? (Optional)"}
-        S -->|Yes| T["QA: *risk + *design on Draft Story"]
-        S -->|No| B3
-        T --> U["Test Strategy & Risk Profile Created"]
-        U --> B3{"PO: Validate Story Draft (Optional)"}
-        B3 -->|Validation Requested| B4["PO: Validate Story Against Artifacts"]
-        B3 -->|Skip Validation| C{"User Approval"}
-        B4 --> C
-        C -->|Approved| D["Dev: Sequential Task Execution"]
-        C -->|Needs Changes| B2
-        D --> E["Dev: Implement Tasks + Tests"]
-        E --> V{"Mid-Dev QA Check? (Optional)"}
-        V -->|Yes| W["QA: *trace or *nfr for Early Validation"]
-        V -->|No| F
-        W --> X["Dev: Address Coverage/NFR Gaps"]
-        X --> F["Dev: Run All Validations"]
-        F --> G["Dev: Mark Ready for Review + Add Notes"]
-        G --> H{"User Verification"}
-        H -->|Request QA Review| I["QA: Test Architect Review + Quality Gate"]
-        H -->|Approve Without QA| M["IMPORTANT: Verify All Regression Tests and Linting are Passing"]
-        I --> J["QA: Test Architecture Analysis + Active Refactoring"]
-        J --> L{"QA Decision"}
-        L -->|Needs Dev Work| D
-        L -->|Approved| M
-        H -->|Needs Fixes| D
-        M --> N["IMPORTANT: COMMIT YOUR CHANGES BEFORE PROCEEDING!"]
-        N --> Y{"Gate Update Needed?"}
-        Y -->|Yes| Z["QA: *gate to Update Status"]
-        Y -->|No| K
-        Z --> K["Mark Story as Done"]
-        K --> B
-    end
+    O["PO: Shard Documents (PRD & Architecture)"] --> P["Ready for SM/Dev Cycle"]
+    P --> A["Development Phase Start"]
+    A --> B["SM: Reviews Previous Story Dev/QA Notes"]
+    B --> B2["SM: Drafts Next Story from Sharded Epic + Architecture"]
+    B2 --> S{"High-Risk Story? (Optional)"}
+    S -->|Yes| T["QA: *risk + *design on Draft Story"]
+    S -->|No| B3
+    T --> U["Test Strategy & Risk Profile Created"]
+    U --> B3{"PO: Validate Story Draft (Optional)"}
+    B3 -->|Validation Requested| B4["PO: Validate Story Against Artifacts"]
+    B3 -->|Skip Validation| C{"User Approval"}
+    B4 --> C
+    C -->|Approved| D["Dev: Sequential Task Execution"]
+    C -->|Needs Changes| B2
+    D --> E["Dev: Implement Tasks + Tests"]
+    E --> V{"Mid-Dev QA Check? (Optional)"}
+    V -->|Yes| W["QA: *trace or *nfr for Early Validation"]
+    V -->|No| F
+    W --> X["Dev: Address Coverage/NFR Gaps"]
+    X --> F["Dev: Run All Validations"]
+    F --> G["Dev: Mark Ready for Review + Add Notes"]
+    G --> H{"User Verification"}
+    H -->|Request QA Review| I["QA: Test Architect Review + Quality Gate"]
+    H -->|Approve Without QA| M["IMPORTANT: Verify All Regression Tests and Linting are Passing"]
+    I --> J["QA: Test Architecture Analysis + Active Refactoring"]
+    J --> L{"QA Decision"}
+    L -->|Needs Dev Work| D
+    L -->|Approved| M
+    H -->|Needs Fixes| D
+    M --> N["IMPORTANT: COMMIT YOUR CHANGES BEFORE PROCEEDING!"]
+    N --> Y{"Gate Update Needed?"}
+    Y -->|Yes| Z["QA: *gate to Update Status"]
+    Y -->|No| K
+    Z --> K["Mark Story as Done"]
+    K --> B
 
     style O fill:#f9ab00,color:#fff
     style P fill:#34a853,color:#fff
