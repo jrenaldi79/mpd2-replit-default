@@ -130,18 +130,34 @@ export default function MarkdownPreviewPage() {
 
             // CRITICAL: In Mermaid 11+, 'flowchart' keyword has better layout control than 'graph'
             // Convert 'graph' to 'flowchart' for better TB enforcement
-            mermaidCode = mermaidCode.replace(/^(\s*)graph\s+(LR|RL|TD|TB|BT)/gm, '$1flowchart TB')
-            mermaidCode = mermaidCode.replace(/^(\s*)graph(\s+[^LTBR]|$)/gm, '$1flowchart TB$2')
+            mermaidCode = mermaidCode.replace(/^(\s*)graph\s+(LR|RL|TD|TB|BT)/gm, '$1flowchart')
+            mermaidCode = mermaidCode.replace(/^(\s*)graph(\s+[^LTBR]|$)/gm, '$1flowchart$2')
 
             // Also handle any remaining graph references
-            mermaidCode = mermaidCode.replace(/graph\s+(LR|RL|TD)/gi, 'flowchart TB')
+            mermaidCode = mermaidCode.replace(/graph\s+(LR|RL|TD|TB|BT)/gi, 'flowchart')
 
-            // Ensure flowchart always has TB direction
-            if (mermaidCode.includes('flowchart') && !mermaidCode.match(/flowchart\s+TB/i)) {
-              mermaidCode = mermaidCode.replace(/flowchart(\s+|$)/i, 'flowchart TB ')
+            // Ensure flowchart keyword is present
+            if (!mermaidCode.includes('flowchart')) {
+              mermaidCode = mermaidCode.replace(/^\s*/,  'flowchart\n')
             }
 
-            console.log('🔄 Converted to flowchart TB:', mermaidCode.substring(0, 200))
+            // Add explicit direction TB statement at the start of flowchart content
+            // This is THE most reliable way to force vertical layout in Mermaid 11+
+            if (!mermaidCode.includes('direction TB') && !mermaidCode.includes('direction LR')) {
+              // Insert direction TB right after the flowchart keyword
+              // Match: flowchart (with optional spaces/newline), then insert direction before anything else
+              const lines = mermaidCode.split('\n')
+              for (let i = 0; i < lines.length; i++) {
+                if (lines[i].trim().startsWith('flowchart')) {
+                  // Insert direction TB as the next line
+                  lines.splice(i + 1, 0, '    direction TB')
+                  break
+                }
+              }
+              mermaidCode = lines.join('\n')
+            }
+
+            console.log('🔄 Converted with direction TB:', mermaidCode.substring(0, 250))
           }
           
           let attempts = 3
