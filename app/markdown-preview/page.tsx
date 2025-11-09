@@ -123,41 +123,24 @@ export default function MarkdownPreviewPage() {
 
           let mermaidCode = codeBlock.textContent || ''
 
-          // ULTRA-AGGRESSIVE vertical orientation enforcement
+          // Simple, reliable vertical orientation enforcement
           if (mermaidCode.includes('graph') || mermaidCode.includes('flowchart')) {
-            // Remove any existing init directive to avoid conflicts
-            mermaidCode = mermaidCode.replace(/%%\{init:.*?\}%%\s*/g, '')
+            // Strategy: Simply ensure the direction is TB, don't over-complicate
 
-            // CRITICAL: In Mermaid 11+, 'flowchart' keyword has better layout control than 'graph'
-            // Convert 'graph' to 'flowchart' for better TB enforcement
-            mermaidCode = mermaidCode.replace(/^(\s*)graph\s+(LR|RL|TD|TB|BT)/gm, '$1flowchart')
-            mermaidCode = mermaidCode.replace(/^(\s*)graph(\s+[^LTBR]|$)/gm, '$1flowchart$2')
+            // Replace horizontal directions with TB (top-to-bottom)
+            mermaidCode = mermaidCode.replace(/graph\s+LR\b/gi, 'graph TB')
+            mermaidCode = mermaidCode.replace(/graph\s+RL\b/gi, 'graph TB')
+            mermaidCode = mermaidCode.replace(/flowchart\s+LR\b/gi, 'flowchart TB')
+            mermaidCode = mermaidCode.replace(/flowchart\s+RL\b/gi, 'flowchart TB')
 
-            // Also handle any remaining graph references
-            mermaidCode = mermaidCode.replace(/graph\s+(LR|RL|TD|TB|BT)/gi, 'flowchart')
+            // Normalize TD to TB for consistency
+            mermaidCode = mermaidCode.replace(/graph\s+TD\b/gi, 'graph TB')
+            mermaidCode = mermaidCode.replace(/flowchart\s+TD\b/gi, 'flowchart TB')
 
-            // Ensure flowchart keyword is present
-            if (!mermaidCode.includes('flowchart')) {
-              mermaidCode = mermaidCode.replace(/^\s*/,  'flowchart\n')
-            }
+            // If graph/flowchart has no direction, add TB
+            mermaidCode = mermaidCode.replace(/^(\s*)(graph|flowchart)(\s*\n)/gim, '$1$2 TB$3')
 
-            // Add explicit direction TB statement at the start of flowchart content
-            // This is THE most reliable way to force vertical layout in Mermaid 11+
-            if (!mermaidCode.includes('direction TB') && !mermaidCode.includes('direction LR')) {
-              // Insert direction TB right after the flowchart keyword
-              // Match: flowchart (with optional spaces/newline), then insert direction before anything else
-              const lines = mermaidCode.split('\n')
-              for (let i = 0; i < lines.length; i++) {
-                if (lines[i].trim().startsWith('flowchart')) {
-                  // Insert direction TB as the next line
-                  lines.splice(i + 1, 0, '    direction TB')
-                  break
-                }
-              }
-              mermaidCode = lines.join('\n')
-            }
-
-            console.log('🔄 Converted with direction TB:', mermaidCode.substring(0, 250))
+            console.log('🔄 Enforced TB direction:', mermaidCode.substring(0, 200))
           }
           
           let attempts = 3
@@ -224,13 +207,14 @@ export default function MarkdownPreviewPage() {
               
             } catch (renderError) {
               attempts--
-              console.warn(`Mermaid render attempt ${4 - attempts} failed for diagram ${i}:`, renderError)
-              
+              console.error(`Mermaid render attempt ${4 - attempts} failed for diagram ${i}:`, renderError)
+              console.error('Attempted to render this code:', mermaidCode)
+
               if (attempts > 0) {
                 // Wait before retry
                 await new Promise(resolve => setTimeout(resolve, 200))
               } else {
-                // All attempts failed - show error with original code
+                // All attempts failed - show error with BOTH original and processed code
                 const errorContainer = document.createElement('div')
                 errorContainer.className = 'mermaid-error'
                 errorContainer.style.cssText = 'background: #fef2f2; border: 1px solid #fca5a5; padding: 1rem; border-radius: 8px; margin: 1.5rem 0;'
@@ -239,9 +223,16 @@ export default function MarkdownPreviewPage() {
                     ⚠️ Diagram rendering failed
                   </div>
                   <div style="color: #7f1d1d; font-size: 14px; margin-bottom: 0.75rem;">
-                    The Mermaid diagram could not be rendered. Original code:
+                    Error: ${renderError instanceof Error ? renderError.message : 'Unknown error'}
                   </div>
-                  <pre style="background: white; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 13px; border: 1px solid #e5e7eb;"><code>${codeBlock.textContent}</code></pre>
+                  <details style="margin-bottom: 0.75rem;">
+                    <summary style="cursor: pointer; color: #7f1d1d; font-size: 14px; font-weight: 600;">Original code</summary>
+                    <pre style="background: white; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 13px; border: 1px solid #e5e7eb; margin-top: 0.5rem;"><code>${codeBlock.textContent}</code></pre>
+                  </details>
+                  <details>
+                    <summary style="cursor: pointer; color: #7f1d1d; font-size: 14px; font-weight: 600;">Processed code (what we tried to render)</summary>
+                    <pre style="background: white; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 13px; border: 1px solid #e5e7eb; margin-top: 0.5rem;"><code>${mermaidCode}</code></pre>
+                  </details>
                 `
                 pre.replaceWith(errorContainer)
               }
