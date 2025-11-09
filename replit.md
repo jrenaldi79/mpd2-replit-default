@@ -10,6 +10,22 @@ This project is a Next.js 16 starter template for Northwestern MPD2 students, fe
 
 ## Recent Changes
 
+### November 9, 2024 - Linting & Type-Checking Setup
+-   **Added**: Complete ESLint 9 and TypeScript type-checking configuration for Next.js 16.
+-   **Configuration**:
+    -   ESLint 9 with flat config format (`eslint.config.mjs`)
+    -   TypeScript ESLint plugin for type-aware linting
+    -   React and React Hooks plugins for best practices
+-   **Commands Added**:
+    -   `npm run type-check` - Validate TypeScript types without building
+    -   `npm run lint` - Run ESLint on codebase
+    -   `npm run validate` - Run both type-check and lint together
+-   **Type Fixes**:
+    -   Added explicit `Promise<NextResponse>` return types to all API route handlers
+    -   Fixed Supabase Database type schema (Views, Functions, Enums, CompositeTypes as `Record<string, never>`)
+    -   Resolved TypeScript build errors for deployment
+-   **Result**: Zero TypeScript errors in app directory, comprehensive linting coverage, ready for production deployment.
+
 ### November 8, 2024 - Mermaid Diagram Rendering Complete Fix
 -   **Issues**: 
     1. Mermaid diagrams were rendering horizontally instead of vertically.
@@ -169,14 +185,57 @@ All file paths must conform to this structure.
 -   **Integration Tests**: Test API endpoints for the full request/response cycle.
 -   **Code Quality Tools**: Use ESLint and Prettier. Implement pre-commit hooks to run linting and basic tests.
 
-## 10. Database (Supabase)
+## 10. Linting & Type-Checking
+
+### TypeScript Type Checking
+-   **Type Safety First**: All code must pass TypeScript type checking before deployment.
+-   **Command**: Run `npm run type-check` to validate types without building.
+-   **CI/CD Integration**: Type checking runs automatically during the build process (`npm run build`).
+-   **Fix Approach**: Address type errors by adding proper type annotations, not by using `any` or `@ts-ignore` unless absolutely necessary.
+
+### ESLint Configuration
+-   **Version**: ESLint 9 with flat config format (`eslint.config.mjs`), required for Next.js 16.
+-   **Plugins**: 
+    -   `typescript-eslint` - TypeScript-specific linting rules
+    -   `eslint-plugin-react` - React best practices
+    -   `eslint-plugin-react-hooks` - React Hooks rules enforcement
+-   **Command**: Run `npm run lint` to check code quality.
+-   **Rules**:
+    -   `@typescript-eslint/no-explicit-any`: warn - Discourage `any` usage
+    -   `@typescript-eslint/no-unused-vars`: warn - Flag unused variables (ignores variables/args starting with `_`)
+    -   `react/react-in-jsx-scope`: off - Not needed in Next.js
+    -   `react-hooks/rules-of-hooks`: error - Enforce Hook rules
+    -   `react-hooks/exhaustive-deps`: warn - Check Hook dependencies
+
+### Combined Validation
+-   **Command**: Run `npm run validate` to execute both type-check and lint together.
+-   **When to Run**:
+    -   Before committing code
+    -   Before requesting code review
+    -   Before deploying to production
+    -   After major refactoring
+-   **Goal**: Zero type errors in `app/` directory; minimize warnings.
+
+### Ignored Files
+The following are excluded from linting:
+-   Build output: `.next/**`, `out/**`, `build/**`
+-   Dependencies: `node_modules/**`
+-   Tests: `tests/**` (have separate validation)
+-   Config files: `*.config.js`, `*.config.mjs`, `*.config.ts`
+
+### Type Definition Best Practices
+-   **Supabase Types**: Use `Record<string, never>` for empty schema containers (Views, Functions, Enums, CompositeTypes).
+-   **API Routes**: Always add explicit return type annotations (e.g., `Promise<NextResponse>`) to API handlers.
+-   **Dynamic Routes**: In Next.js 16, params must be typed as `Promise<{ id: string }>` and awaited.
+
+## 11. Database (Supabase)
 
 -   **Interaction**: Use the Supabase SDK for all data fetching and querying.
 -   **Security**: Use Row Level Security (RLS) policies in Supabase for all data access control.
 -   **Schema**: Create data models using Supabase's schema builder.
 -   **Type Safety**: Use TypeScript for type safety when interacting with Supabase.
 
-## 11. Logging, Monitoring & Error Handling
+## 12. Logging, Monitoring & Error Handling
 
 -   **Global Logging**: Every function must have appropriate logging using **Winston**. Avoid `console.log`.
 -   **Structured Logging**: Implement structured logs with consistent levels (error, warn, info, debug) and correlation IDs.
@@ -187,7 +246,7 @@ All file paths must conform to this structure.
     -   Gracefully handle `loading.js`, error, and empty states in all UI components.
     -   Validate and sanitize all inputs at API boundaries.
 
-## 12. Security Best Practices
+## 13. Security Best Practices
 
 -   **Authentication**: Implement proper authentication and authorization using Supabase. Validate JWTs and handle expiration.
 -   **Data Access**: Adhere to the principle of least privilege via RLS policies.
@@ -195,12 +254,12 @@ All file paths must conform to this structure.
 -   **API Security**: Configure CORS policies and implement rate limiting on API endpoints.
 -   **Secrets**: Store all sensitive configuration in environment variables. **Never commit secrets to code.**
 
-## 13. Your Response Constraints
+## 14. Your Response Constraints
 
 -   **Communication Style**: Simple, everyday language.
 -   **Code Modification**: Do not remove existing code, comments, or commented-out code unless necessary. Do not change formatting unless important for new functionality.
 
-## 14. Maintenance Guidelines
+## 15. Maintenance Guidelines
 
 Update this rules file when:
 -   Adding new major dependencies or architectural patterns.
