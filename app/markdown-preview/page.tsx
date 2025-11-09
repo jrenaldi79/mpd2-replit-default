@@ -138,8 +138,14 @@ export default function MarkdownPreviewPage() {
             // If graph/flowchart has no direction, add TB
             mermaidCode = mermaidCode.replace(/^(\s*)(graph|flowchart)(\s*\n)/gim, '$1$2 TB$3')
 
-            // CRITICAL: Inject explicit direction TB statement after the graph/flowchart line
-            // This overrides Mermaid's automatic layout decisions
+            // CRITICAL: Add init directive to force layout engine parameters
+            // This is the MOST aggressive way to override Mermaid's layout decisions
+            if (!mermaidCode.includes('%%{init')) {
+              // Prepend init directive that forces TB layout at the engine level
+              mermaidCode = `%%{init: {'flowchart': {'rankDir': 'TB'}, 'theme': 'default'}}%%\n${mermaidCode}`
+            }
+
+            // ALSO inject explicit direction TB statement for double enforcement
             if (!mermaidCode.includes('direction TB') && !mermaidCode.includes('direction LR')) {
               const lines = mermaidCode.split('\n')
               for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
