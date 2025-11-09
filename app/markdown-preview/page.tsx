@@ -87,11 +87,11 @@ export default function MarkdownPreviewPage() {
             tertiaryColor: '#ffffff'
           },
           flowchart: {
-            useMaxWidth: false,
+            useMaxWidth: true,    // Constrain width to force vertical layout
             htmlLabels: true,
             curve: 'basis',
-            rankSpacing: 80,      // Vertical spacing between ranks
-            nodeSpacing: 50,      // Horizontal spacing between nodes in same rank
+            rankSpacing: 100,     // Increase vertical spacing between ranks
+            nodeSpacing: 20,      // Reduce horizontal spacing to discourage wide layouts
             diagramPadding: 20,
             defaultRenderer: 'dagre-d3'
           },
