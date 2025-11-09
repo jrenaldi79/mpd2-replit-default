@@ -140,7 +140,8 @@ export default function MarkdownPreviewPage() {
 
             // CRITICAL: Add init directive to force layout engine parameters
             // This is the MOST aggressive way to override Mermaid's layout decisions
-            if (!mermaidCode.includes('%%{init')) {
+            // Use regex to detect existing init blocks regardless of spacing/casing
+            if (!/%{2,}\s*\{\s*init\s*:/i.test(mermaidCode)) {
               // Prepend init directive that forces TB layout at the engine level
               mermaidCode = `%%{init: {'flowchart': {'rankDir': 'TB'}, 'theme': 'default'}}%%\n${mermaidCode}`
             }
