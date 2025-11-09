@@ -99,7 +99,7 @@ function sortNodes(nodes: FileNode[]): FileNode[] {
   return sorted
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const searchParams = request.nextUrl.searchParams
     const filePath = searchParams.get('path')

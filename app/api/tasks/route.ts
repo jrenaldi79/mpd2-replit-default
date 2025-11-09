@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import type { TaskInsert } from '@/types/supabase'
 
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   try {
     const { data, error } = await supabase
       .from('tasks')
@@ -25,7 +25,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse> {
   try {
     const body = await request.json() as TaskInsert
 

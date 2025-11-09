@@ -5,7 +5,7 @@ import type { TaskUpdate } from '@/types/supabase'
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+): Promise<NextResponse> {
   try {
     const body = await request.json() as TaskUpdate
     const { id } = await params
@@ -17,9 +17,11 @@ export async function PATCH(
       )
     }
 
+    const updateData: TaskUpdate = { ...body, updated_at: new Date().toISOString() }
+    
     const { data, error } = await supabase
       .from('tasks')
-      .update({ ...body, updated_at: new Date().toISOString() })
+      .update(updateData)
       .eq('id', id)
       .select()
       .single()
@@ -50,7 +52,7 @@ export async function PATCH(
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
-) {
+): Promise<NextResponse> {
   try {
     const { id } = await params
 

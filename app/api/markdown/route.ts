@@ -6,7 +6,7 @@ import DOMPurify from 'isomorphic-dompurify'
 
 const PROJECT_ROOT = path.resolve(process.cwd())
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const searchParams = request.nextUrl.searchParams
     const file = searchParams.get('file')

@@ -27,7 +27,7 @@ function parseTestResults(stdout: string) {
   return testResults;
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   return new Promise((resolve) => {
     exec(
       'npm test -- --json --coverage --verbose',
