@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import DOMPurify from 'isomorphic-dompurify'
@@ -11,13 +11,15 @@ import './mermaid-styles.css'
 import FileTree from './FileTree'
 import { FileNode } from '@/app/api/files/route'
 
+export const dynamic = 'force-dynamic'
+
 interface MarkdownContent {
   content: string
   html: string
   file: string
 }
 
-export default function MarkdownPreviewPage() {
+function MarkdownPreviewContent() {
   const searchParams = useSearchParams()
   const [fileTree, setFileTree] = useState<FileNode[]>([])
   const [selectedFile, setSelectedFile] = useState<string | null>(null)
@@ -368,5 +370,20 @@ export default function MarkdownPreviewPage() {
         </main>
       </div>
     </div>
+  )
+}
+
+export default function MarkdownPreviewPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <MarkdownPreviewContent />
+    </Suspense>
   )
 }
