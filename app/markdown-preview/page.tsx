@@ -93,9 +93,7 @@ export default function MarkdownPreviewPage() {
             curve: 'basis',
             rankSpacing: 120,     // Increase vertical spacing between ranks
             nodeSpacing: 15,      // Reduce horizontal spacing to strongly discourage wide layouts
-            diagramPadding: 15,
-            defaultRenderer: 'dagre-d3',
-            wrappingWidth: 200    // Wrap text in nodes to reduce horizontal spread
+            diagramPadding: 15
           },
           sequence: {
             useMaxWidth: false,
