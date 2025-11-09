@@ -69,7 +69,8 @@ export default function MarkdownPreviewPage() {
           }
         })
 
-        // Configure mermaid for vertical layouts with improved settings
+        // Configure mermaid with STRICT vertical layout enforcement
+        // NOTE: Mermaid uses 'rankDir' with capital D, not 'rankdir'
         mermaid.initialize({
           startOnLoad: false,
           theme: 'default',
@@ -92,8 +93,7 @@ export default function MarkdownPreviewPage() {
             rankSpacing: 80,      // Vertical spacing between ranks
             nodeSpacing: 50,      // Horizontal spacing between nodes in same rank
             diagramPadding: 20,
-            defaultRenderer: 'dagre-d3',
-            rankdir: 'TB'         // Force top-to-bottom direction
+            defaultRenderer: 'dagre-d3'
           },
           sequence: {
             useMaxWidth: false,
@@ -123,21 +123,41 @@ export default function MarkdownPreviewPage() {
 
           let mermaidCode = codeBlock.textContent || ''
 
-          // Force vertical orientation for all flowcharts
-          if (mermaidCode.includes('graph')) {
-            // Add explicit init directive for vertical layout if not present
-            if (!mermaidCode.includes('%%{init:')) {
-              mermaidCode = `%%{init: {'flowchart': {'rankdir': 'TB'}}}%%\n${mermaidCode}`
+          // ULTRA-AGGRESSIVE vertical orientation enforcement
+          if (mermaidCode.includes('graph') || mermaidCode.includes('flowchart')) {
+            // Remove any existing init directive to avoid conflicts
+            mermaidCode = mermaidCode.replace(/%%\{init:.*?\}%%\s*/g, '')
+
+            // CRITICAL: In Mermaid 11+, 'flowchart' keyword has better layout control than 'graph'
+            // Convert 'graph' to 'flowchart' for better TB enforcement
+            mermaidCode = mermaidCode.replace(/^(\s*)graph\s+(LR|RL|TD|TB|BT)/gm, '$1flowchart')
+            mermaidCode = mermaidCode.replace(/^(\s*)graph(\s+[^LTBR]|$)/gm, '$1flowchart$2')
+
+            // Also handle any remaining graph references
+            mermaidCode = mermaidCode.replace(/graph\s+(LR|RL|TD|TB|BT)/gi, 'flowchart')
+
+            // Ensure flowchart keyword is present
+            if (!mermaidCode.includes('flowchart')) {
+              mermaidCode = mermaidCode.replace(/^\s*/,  'flowchart\n')
             }
 
-            // Replace any horizontal orientations with vertical
-            mermaidCode = mermaidCode.replace(/graph\s+LR/g, 'graph TD')
-            mermaidCode = mermaidCode.replace(/graph\s+RL/g, 'graph TD')
-
-            // Ensure graph has a direction - if TD/TB is missing, add it
-            if (!mermaidCode.match(/graph\s+(TD|TB|BT|LR|RL)/)) {
-              mermaidCode = mermaidCode.replace(/graph(\s|$)/, 'graph TD$1')
+            // Add explicit direction TB statement at the start of flowchart content
+            // This is THE most reliable way to force vertical layout in Mermaid 11+
+            if (!mermaidCode.includes('direction TB') && !mermaidCode.includes('direction LR')) {
+              // Insert direction TB right after the flowchart keyword
+              // Match: flowchart (with optional spaces/newline), then insert direction before anything else
+              const lines = mermaidCode.split('\n')
+              for (let i = 0; i < lines.length; i++) {
+                if (lines[i].trim().startsWith('flowchart')) {
+                  // Insert direction TB as the next line
+                  lines.splice(i + 1, 0, '    direction TB')
+                  break
+                }
+              }
+              mermaidCode = lines.join('\n')
             }
+
+            console.log('🔄 Converted with direction TB:', mermaidCode.substring(0, 250))
           }
           
           let attempts = 3
@@ -148,10 +168,9 @@ export default function MarkdownPreviewPage() {
               // Generate unique ID for each attempt
               const id = `mermaid-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 5)}`
               
-              // Create container
+              // Create container (CSS classes handle all styling)
               const container = document.createElement('div')
               container.className = 'mermaid-container my-6'
-              container.style.cssText = 'display: block; width: 100%; max-width: 100%; overflow-x: auto; margin: 1.5rem 0; background: #f9fafb; padding: 1.5rem; border-radius: 8px; border: 1px solid #e5e7eb;'
               
               // Render diagram
               const { svg } = await mermaid.render(id, mermaidCode)
@@ -159,18 +178,43 @@ export default function MarkdownPreviewPage() {
               // Insert SVG
               container.innerHTML = svg
               
-              // Optimize SVG dimensions for vertical layout
+              // Optimize SVG dimensions and DETECT horizontal rendering
               const svgElement = container.querySelector('svg')
               if (svgElement) {
-                // Remove any fixed dimensions that might force horizontal layout
+                // Check the viewBox to determine if diagram rendered horizontally
+                const viewBox = svgElement.getAttribute('viewBox')
+                let isHorizontal = false
+
+                if (viewBox) {
+                  const [x, y, width, height] = viewBox.split(' ').map(Number)
+                  isHorizontal = width > height * 1.5  // If width is significantly > height
+
+                  if (isHorizontal) {
+                    console.warn(`Diagram ${i} rendered horizontally (${width}x${height}). This should be vertical!`)
+                    console.warn('Diagram code:', mermaidCode.substring(0, 300))
+                  }
+                }
+
+                // Let SVG use its natural dimensions for proper vertical layout
+                // Only remove width/height attributes that might constrain it
+                const originalWidth = svgElement.getAttribute('width')
+                const originalHeight = svgElement.getAttribute('height')
+
                 svgElement.removeAttribute('width')
                 svgElement.removeAttribute('height')
-                svgElement.style.width = '100%'
-                svgElement.style.maxWidth = '100%'
-                svgElement.style.height = 'auto'
-                svgElement.style.minHeight = '400px'
 
-                // Ensure the SVG preserves aspect ratio
+                // Let CSS handle sizing (from mermaid-styles.css)
+                // Don't override with inline styles
+
+                // Log dimensions for debugging
+                if (isHorizontal) {
+                  console.error(`❌ Diagram ${i} STILL horizontal after conversion! Original: ${originalWidth}x${originalHeight}`)
+                  console.error('This indicates Mermaid is ignoring TB direction. Check console for processed code.')
+                } else {
+                  console.log(`✅ Diagram ${i} rendered vertically`)
+                }
+
+                // Preserve aspect ratio
                 svgElement.setAttribute('preserveAspectRatio', 'xMidYMid meet')
               }
               

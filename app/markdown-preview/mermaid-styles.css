@@ -1,35 +1,26 @@
-/* Mermaid diagram container styles - force vertical layout */
+/* Mermaid diagram container styles - STRICT vertical layout */
 .mermaid-container {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
   width: 100% !important;
-  max-width: 1200px !important;
-  margin: 1.5rem auto !important;
+  max-width: none !important;  /* Remove max-width constraint that might force horizontal */
+  margin: 2rem 0 !important;
+  padding: 2rem !important;
   overflow-x: auto !important;
   overflow-y: visible !important;
   clear: both !important;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 .mermaid-container svg {
   display: block !important;
-  width: 100% !important;
+  width: auto !important;  /* Let SVG determine its own width */
   max-width: 100% !important;
   height: auto !important;
   margin: 0 auto !important;
-}
-
-/* Force flowchart to use vertical orientation */
-.mermaid-container svg g.graph {
-  transform-origin: center center;
-}
-
-/* Ensure flowchart nodes stack vertically with proper spacing */
-.mermaid-container svg .node {
-  margin-bottom: 20px !important;
-}
-
-/* Ensure proper edge routing for vertical flow */
-.mermaid-container svg .edgePath {
-  stroke-width: 2px !important;
 }
 
 /* Ensure diagrams don't float or display inline */
